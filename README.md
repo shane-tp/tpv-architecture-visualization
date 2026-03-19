@@ -7,7 +7,7 @@ Interactive architecture visualization for the TPV platform. Pannable, zoomable 
 - React 19 + Vite 8
 - Tailwind CSS 3
 - Lucide React (icons)
-- GitHub Pages via `gh-pages`
+- GitHub Pages (auto-deploys on push to `main`)
 
 ## Getting Started
 
@@ -16,13 +16,9 @@ pnpm install
 pnpm dev
 ```
 
-## Deploy to GitHub Pages
+## Deployment
 
-```bash
-pnpm deploy
-```
-
-This runs `vite build` then publishes `dist/` to the `gh-pages` branch.
+Pushing to `main` triggers a GitHub Actions workflow that builds and deploys to GitHub Pages automatically.
 
 ## Scripts
 
@@ -31,5 +27,4 @@ This runs `vite build` then publishes `dist/` to the `gh-pages` branch.
 | `pnpm dev` | Start dev server |
 | `pnpm build` | Production build |
 | `pnpm preview` | Preview production build locally |
-| `pnpm deploy` | Build and deploy to GitHub Pages |
 | `pnpm lint` | Run ESLint |
