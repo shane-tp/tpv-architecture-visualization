@@ -1,3 +1,101 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-app: #F4F6FA;
+    --bg-elevated: #FFFFFF;
+    --surface-card: #FFFFFF;
+    --surface-card-hover: #F8FAFC;
+
+    --border-subtle: #E2E8F0;
+    --border-strong: #CBD5E1;
+
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+
+    --canvas-bg: #EEF1F6;
+    --canvas-grid-color: rgba(15, 23, 42, 0.05);
+
+    --edge-label-fill: #475569;
+    --arrow-fill: #94A3B8;
+
+    --node-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.07);
+    --node-shadow-hover: 0 2px 4px rgba(15, 23, 42, 0.07), 0 8px 24px rgba(15, 23, 42, 0.10);
+    --node-inset: none;
+
+    --group-label-bg: #FFFFFF;
+
+    --toolbar-bg: rgba(255, 255, 255, 0.85);
+    --toolbar-border: rgba(226, 232, 240, 0.8);
+  }
+
+  .dark {
+    --bg-app: #0B0F14;
+    --bg-elevated: #121826;
+    --surface-card: #151C2C;
+    --surface-card-hover: #1A2336;
+
+    --border-subtle: #243044;
+    --border-strong: #334155;
+
+    --text-primary: #E8EDF5;
+    --text-secondary: #9AA4B2;
+    --text-muted: #7B8694;
+
+    --canvas-bg: #080C12;
+    --canvas-grid-color: rgba(148, 163, 184, 0.05);
+
+    --edge-label-fill: #9AA4B2;
+    --arrow-fill: #6B7280;
+
+    --node-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    --node-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.45);
+    --node-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+    --group-label-bg: #0B0F14;
+
+    --toolbar-bg: rgba(18, 24, 38, 0.88);
+    --toolbar-border: rgba(36, 48, 68, 0.8);
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+  }
+}
+
+@layer utilities {
+  .transition-theme {
+    transition: background-color 300ms ease, border-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::selection {
+  background-color: rgba(99, 102, 241, 0.25);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
