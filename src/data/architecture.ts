@@ -5,103 +5,128 @@ import {
 } from 'lucide-react'
 import type { ArchGroup, ArchNode, ArchEdge } from '../types/architecture'
 
-export const NODE_W = 270
-export const NODE_H = 135
-export const CANVAS_W = 2800
-export const CANVAS_H = 3320
+export const NODE_W = 320
+export const NODE_H = 140
+export const CANVAS_W = 5500
+export const CANVAS_H = 3200
 
-const FSM_W = 230
+const FSM_W = 260
 const FSM_H = 110
-const MID_W = 250
-const MID_H = 115
-const HERO_W = 330
-const HERO_H = 160
-const BIG_W = 360
-const BIG_H = 170
+const MID_W = 280
+const MID_H = 130
+const HERO_W = 400
+const HERO_H = 200
+const BIG_W = 420
+const BIG_H = 180
+
+// ═══════════════════════════════════════════════════════════════
+// THREE-BAND LAYOUT
+//
+// Band 1 (USER JOURNEY):  FSM horizontal pipeline across top
+// Band 2 (RUNTIME):       Client | Systems | Networking | Server
+// Band 3 (EXTERNAL):      Services | File Export | TP Hub | Integrations
+// ═══════════════════════════════════════════════════════════════
 
 export const archGroups: ArchGroup[] = [
-  { id: 'fsm',          label: 'GAME STATE MACHINE',      x: 40,   y: 40,   w: 2680, h: 1080, color: 'cyan' },
-  { id: 'client',       label: 'CLIENT APPLICATION',      x: 40,   y: 1200, w: 980,  h: 520,  color: 'blue' },
-  { id: 'systems',      label: 'GAME SYSTEMS',            x: 1120, y: 1200, w: 1120, h: 520,  color: 'purple' },
-  { id: 'net',          label: 'NETWORKING',               x: 40,   y: 1800, w: 500,  h: 260,  color: 'emerald' },
-  { id: 'server',       label: 'SERVER (Headless Unity)',  x: 600,  y: 1800, w: 860,  h: 560,  color: 'orange' },
-  { id: 'fit',          label: 'FILE EXPORT',              x: 1520, y: 1800, w: 460,  h: 270,  color: 'indigo' },
-  { id: 'tphub',        label: 'TP HUB MOBILE',            x: 2040, y: 1800, w: 420,  h: 260,  color: 'amber' },
-  { id: 'services',     label: 'EXTERNAL SERVICES',        x: 40,   y: 2450, w: 980,  h: 520,  color: 'rose' },
-  { id: 'integrations', label: 'INTEGRATIONS',             x: 1120, y: 2450, w: 1120, h: 520,  color: 'amber' },
+  // Band 1 — FSM
+  { id: 'fsm',          label: 'GAME STATE MACHINE',      x: 60,   y: 60,   w: 5400, h: 1200, color: 'cyan' },
+
+  // Band 2 — Core runtime (4 groups, evenly spread full width)
+  { id: 'client',       label: 'CLIENT APPLICATION',      x: 60,   y: 1440, w: 1200, h: 780,  color: 'blue' },
+  { id: 'systems',      label: 'GAME SYSTEMS',            x: 1440, y: 1440, w: 1200, h: 780,  color: 'purple' },
+  { id: 'net',          label: 'NETWORKING',               x: 2820, y: 1440, w: 600,  h: 440,  color: 'emerald' },
+  { id: 'server',       label: 'SERVER (Headless Unity)',  x: 3600, y: 1440, w: 1200, h: 780,  color: 'orange' },
+
+  // Band 3 — External/supporting (4 groups, evenly spread full width)
+  { id: 'services',     label: 'EXTERNAL SERVICES',        x: 60,   y: 2420, w: 1200, h: 620,  color: 'rose' },
+  { id: 'fit',          label: 'FILE EXPORT',              x: 1440, y: 2420, w: 600,  h: 400,  color: 'indigo' },
+  { id: 'tphub',        label: 'TP HUB MOBILE',            x: 2220, y: 2420, w: 600,  h: 400,  color: 'amber' },
+  { id: 'integrations', label: 'INTEGRATIONS',             x: 3000, y: 2420, w: 1200, h: 620,  color: 'amber' },
 ]
 
 export const archNodes: ArchNode[] = [
-  // ── FSM: Branching flowchart (organic "river" — boot tier uses a wave, not a flat grid) ──
+  // ═══════════════════════════════════════════════════════════════
+  // BAND 1 — FSM: Horizontal pipeline with generous spacing
+  // ═══════════════════════════════════════════════════════════════
 
-  // Tier 1 — Boot wave: alternate Y so connectors arc diagonally (more readable than one cramped line)
-  { id: 'init',      group: 'fsm', label: 'Initializing',    desc: 'App.Awake() wires 65+ managers',     x: 100,  y: 88,   w: FSM_W, h: FSM_H, icon: Activity,  color: 'cyan', status: 'STABLE' },
-  { id: 'loadAcc',   group: 'fsm', label: 'Load Accounts',   desc: 'Loads local profile from device',    x: 450,  y: 138,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'ACTIVE' },
-  { id: 'verCheck',  group: 'fsm', label: 'Version Check',   desc: 'Compares build version to API',      x: 800,  y: 88,   w: FSM_W, h: FSM_H, icon: Code,      color: 'cyan', status: 'STABLE' },
-  { id: 'inAcc',     group: 'fsm', label: 'In Accounts',     desc: 'Login / create account UI',          x: 1150, y: 138,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'ACTIVE' },
+  // Tier 1 — Boot strip (staggered wave, ~420px gaps)
+  { id: 'init',      group: 'fsm', label: 'Initializing',    desc: 'App.Awake() wires 65+ managers',     x: 140,  y: 120,  w: FSM_W, h: FSM_H, icon: Activity,  color: 'cyan', status: 'STABLE' },
+  { id: 'loadAcc',   group: 'fsm', label: 'Load Accounts',   desc: 'Loads local profile from device',    x: 560,  y: 170,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'ACTIVE' },
+  { id: 'verCheck',  group: 'fsm', label: 'Version Check',   desc: 'Compares build version to API',      x: 980,  y: 120,  w: FSM_W, h: FSM_H, icon: Code,      color: 'cyan', status: 'STABLE' },
+  { id: 'inAcc',     group: 'fsm', label: 'In Accounts',     desc: 'Login / create account UI',          x: 1400, y: 170,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'ACTIVE' },
 
-  // Tier 2 — Branch (extra air below boot wave)
-  { id: 'onboard',   group: 'fsm', label: 'Onboarding',      desc: 'EULA → Avatar → Profile wizard',     x: 800,  y: 400,  w: FSM_W, h: FSM_H, icon: Flag,      color: 'cyan', status: 'STABLE' },
-  { id: 'loadHub',   group: 'fsm', label: 'Load Hub',        desc: 'Addressables: Hub scene async',      x: 1150, y: 400,  w: FSM_W, h: FSM_H, icon: Layout,    color: 'cyan', status: 'ACTIVE' },
+  // Tier 2 — Branch (generous vertical gap ~200px below tier 1)
+  { id: 'onboard',   group: 'fsm', label: 'Onboarding',      desc: 'EULA → Avatar → Profile wizard',     x: 1200, y: 420,  w: FSM_W, h: FSM_H, icon: Flag,      color: 'cyan', status: 'STABLE' },
+  { id: 'loadHub',   group: 'fsm', label: 'Load Hub',        desc: 'Addressables: Hub scene async',      x: 1620, y: 420,  w: FSM_W, h: FSM_H, icon: Layout,    color: 'cyan', status: 'ACTIVE' },
 
-  // Tier 3 — Main flow (staggered vertical rhythm, wider horizontal spread)
-  { id: 'hub',       group: 'fsm', label: 'In Hub',          desc: 'Main menu — events, routes, workouts',  x: 680,  y: 640,  w: BIG_W, h: BIG_H, icon: Globe,     color: 'cyan', status: 'PEAK' },
-  { id: 'pair',      group: 'fsm', label: 'Select Pairing',  desc: 'ANT+/BLE device discovery',          x: 1180, y: 675,  w: MID_W, h: MID_H, icon: Bluetooth, color: 'cyan', status: 'STABLE' },
-  { id: 'worldLoad', group: 'fsm', label: 'World Load',      desc: 'Addressables: world, avatars, routes', x: 1560, y: 675, w: MID_W, h: MID_H, icon: Globe,   color: 'cyan', status: 'ACTIVE' },
-  { id: 'world',     group: 'fsm', label: 'In World',        desc: 'Riding — physics, social, bots',     x: 1940, y: 640,  w: BIG_W, h: BIG_H, icon: Monitor,   color: 'cyan', status: 'PEAK' },
+  // Tier 3 — Main ride path (hero nodes, 500-600px gaps)
+  { id: 'hub',       group: 'fsm', label: 'In Hub',          desc: 'Main menu — events, routes, workouts',  x: 2040, y: 300,  w: HERO_W, h: HERO_H, icon: Globe,     color: 'cyan', status: 'PEAK' },
+  { id: 'pair',      group: 'fsm', label: 'Select Pairing',  desc: 'ANT+/BLE device discovery',          x: 2700, y: 380,  w: MID_W,  h: MID_H,  icon: Bluetooth, color: 'cyan', status: 'STABLE' },
+  { id: 'worldLoad', group: 'fsm', label: 'World Load',      desc: 'Addressables: world, avatars, routes', x: 3240, y: 380, w: MID_W,  h: MID_H,  icon: Globe,   color: 'cyan', status: 'ACTIVE' },
+  { id: 'world',     group: 'fsm', label: 'In World',        desc: 'Riding — physics, social, bots',     x: 3780, y: 300,  w: HERO_W, h: HERO_H, icon: Monitor,   color: 'cyan', status: 'PEAK' },
 
-  // Tier 4 — End states (pulled down for arrow clearance above hub ↔ logout)
-  { id: 'logout',    group: 'fsm', label: 'Logout',          desc: 'Clear session, disconnect',          x: 140,  y: 940,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'STABLE' },
-  { id: 'quit',      group: 'fsm', label: 'Quit',            desc: 'Exit application',                   x: 480,  y: 940,  w: FSM_W, h: FSM_H, icon: Settings,  color: 'cyan' },
-  { id: 'ride',      group: 'fsm', label: 'End Ride',        desc: 'FIT upload, results review',         x: 1000, y: 930,  w: NODE_W, h: NODE_H, icon: Activity, color: 'cyan', status: 'ACTIVE' },
-  { id: 'pen',       group: 'fsm', label: 'Join Pen',        desc: 'Pre-race wait, entrant list',        x: 1620, y: 940,  w: MID_W, h: MID_H, icon: Flag,      color: 'cyan', status: 'STABLE' },
+  // Right-side end states (big gap from World)
+  { id: 'ride',      group: 'fsm', label: 'End Ride',        desc: 'FIT upload, results review',         x: 4460, y: 300,  w: NODE_W, h: NODE_H, icon: Activity, color: 'cyan', status: 'ACTIVE' },
+  { id: 'pen',       group: 'fsm', label: 'Join Pen',        desc: 'Pre-race wait, entrant list',        x: 4460, y: 560,  w: MID_W,  h: MID_H,  icon: Flag,      color: 'cyan', status: 'STABLE' },
 
-  // ── Client Application ──
-  { id: 'stateMgr',  group: 'client',  label: 'StateManager',      desc: '14-State Enum FSM',                x: 140,  y: 1320, w: HERO_W, h: HERO_H, icon: Activity, color: 'blue', status: 'ACTIVE', metric: { label: 'STATES', value: 14 } },
-  { id: 'app',       group: 'client',  label: 'App.cs',            desc: 'God Object — 1200+ LOC, 65 Mgrs',  x: 560,  y: 1310, w: BIG_W,  h: BIG_H,  icon: Code,    color: 'blue', status: 'DEBT_LCL' },
-  { id: 'gui',       group: 'client',  label: 'UI Layer',          desc: '100+ MenuTypes, uGUI + TMPro',     x: 140,  y: 1530, w: NODE_W, h: NODE_H, icon: Layout,   color: 'blue', status: 'STABLE' },
-  { id: 'netServ',   group: 'client',  label: 'NetServManager',    desc: 'TCP:7779, mDNS companion link',    x: 480,  y: 1540, w: MID_W,  h: MID_H,  icon: Radio,   color: 'blue', status: 'ACTIVE' },
+  // Left-side exits (below boot strip)
+  { id: 'logout',    group: 'fsm', label: 'Logout',          desc: 'Clear session, disconnect',          x: 140,  y: 680,  w: FSM_W,  h: FSM_H,  icon: User,      color: 'cyan', status: 'STABLE' },
+  { id: 'quit',      group: 'fsm', label: 'Quit',            desc: 'Exit application',                   x: 140,  y: 880,  w: FSM_W,  h: FSM_H,  icon: Settings,  color: 'cyan' },
 
-  // ── Game Systems ──
-  { id: 'parts',     group: 'systems', label: 'Modular Avatar',    desc: 'Body, Kit, Bike frames',           x: 1220, y: 1320, w: NODE_W, h: NODE_H, icon: User,     color: 'purple', status: 'STABLE' },
-  { id: 'bots',      group: 'systems', label: 'Bot AI',            desc: 'Client ambient + Server pace',     x: 1580, y: 1330, w: NODE_W, h: NODE_H, icon: Bot,      color: 'purple', status: 'ACTIVE' },
-  { id: 'pairing',   group: 'systems', label: 'Hardware Pairing',  desc: 'ANT+, BLE, FTMS',                  x: 1220, y: 1510, w: HERO_W, h: HERO_H, icon: Bluetooth, color: 'purple', status: 'LEGACY' },
-  { id: 'zwo',       group: 'systems', label: 'Workout Engine',    desc: 'ZWO/MRC/JSON, ERG Mode',           x: 1640, y: 1520, w: HERO_W, h: HERO_H, icon: FileJson, color: 'purple', status: 'STABLE' },
+  // ═══════════════════════════════════════════════════════════════
+  // BAND 2 — Core Runtime
+  // ═══════════════════════════════════════════════════════════════
 
-  // ── Networking (left) ──
-  { id: 'tcp',       group: 'net',     label: 'Riptide Network',   desc: 'TCP+UDP Dual Transport, 20Hz',     x: 110,  y: 1860, w: BIG_W,  h: BIG_H,  icon: Wifi,    color: 'emerald', status: 'ACTIVE', metric: { label: 'TICK', value: 20, unit: 'Hz' } },
+  // Client Application
+  { id: 'stateMgr',  group: 'client',  label: 'StateManager',      desc: '14-State Enum FSM',                x: 120,  y: 1540, w: BIG_W,  h: BIG_H,  icon: Activity, color: 'blue', status: 'ACTIVE', metric: { label: 'STATES', value: 14 } },
+  { id: 'app',       group: 'client',  label: 'App.cs',            desc: 'God Object — 1200+ LOC, 65 Mgrs',  x: 640,  y: 1530, w: BIG_W,  h: BIG_H,  icon: Code,    color: 'blue', status: 'DEBT_LCL' },
+  { id: 'gui',       group: 'client',  label: 'UI Layer',          desc: '100+ MenuTypes, uGUI + TMPro',     x: 120,  y: 1820, w: NODE_W, h: NODE_H, icon: Layout,   color: 'blue', status: 'STABLE' },
+  { id: 'netServ',   group: 'client',  label: 'NetServManager',    desc: 'TCP:7779, mDNS companion link',    x: 560,  y: 1830, w: MID_W,  h: MID_H,  icon: Radio,   color: 'blue', status: 'ACTIVE' },
 
-  // ── Server (center) ──
-  { id: 'headless',  group: 'server',  label: 'Headless Unity',    desc: 'Game Server Instance',             x: 700,  y: 1920, w: BIG_W,  h: BIG_H,  icon: Server,  color: 'orange', status: 'ACTIVE' },
-  { id: 'physics',   group: 'server',  label: 'PhysicsManager',    desc: 'CdA, Draft (55% max), Server-Auth', x: 1100, y: 1930, w: HERO_W, h: HERO_H, icon: Zap,     color: 'orange', status: 'STABLE' },
-  { id: 'races',     group: 'server',  label: 'EventManager',      desc: '10+ Race Types, Rankings',         x: 700,  y: 2150, w: HERO_W, h: HERO_H, icon: Flag,    color: 'orange', status: 'PEAK' },
-  { id: 'pacebots',  group: 'server',  label: 'PaceBots',          desc: 'Server-side AI, per-event',        x: 1080, y: 2160, w: NODE_W, h: NODE_H, icon: Bot,     color: 'orange', status: 'STABLE' },
+  // Game Systems
+  { id: 'parts',     group: 'systems', label: 'Modular Avatar',    desc: 'Body, Kit, Bike frames',           x: 1500, y: 1540, w: NODE_W, h: NODE_H, icon: User,     color: 'purple', status: 'STABLE' },
+  { id: 'bots',      group: 'systems', label: 'Bot AI',            desc: 'Client ambient + Server pace',     x: 1940, y: 1550, w: NODE_W, h: NODE_H, icon: Bot,      color: 'purple', status: 'ACTIVE' },
+  { id: 'pairing',   group: 'systems', label: 'Hardware Pairing',  desc: 'ANT+, BLE, FTMS',                  x: 1500, y: 1800, w: HERO_W, h: HERO_H, icon: Bluetooth, color: 'purple', status: 'LEGACY' },
+  { id: 'zwo',       group: 'systems', label: 'Workout Engine',    desc: 'ZWO/MRC/JSON, ERG Mode',           x: 1980, y: 1800, w: HERO_W, h: HERO_H, icon: FileJson, color: 'purple', status: 'STABLE' },
 
-  // ── File Export (right) ──
-  { id: 'fitservice', group: 'fit',    label: 'FITFileService',    desc: 'Dynastream SDK, Dev Fields',       x: 1590, y: 1870, w: HERO_W, h: HERO_H, icon: File,    color: 'indigo', status: 'ACTIVE' },
+  // Networking
+  { id: 'tcp',       group: 'net',     label: 'Riptide Network',   desc: 'TCP+UDP Dual Transport, 20Hz',     x: 2880, y: 1540, w: BIG_W,  h: BIG_H,  icon: Wifi,    color: 'emerald', status: 'ACTIVE', metric: { label: 'TICK', value: 20, unit: 'Hz' } },
 
-  // ── TP Hub Mobile (far right, same row) ──
-  { id: 'tpHub',     group: 'tphub',   label: 'TP Hub Mobile',     desc: 'React Native — mDNS, TCP:7779',   x: 2110, y: 1870, w: NODE_W, h: NODE_H, icon: Smartphone, color: 'amber', status: 'ACTIVE' },
+  // Server (Headless Unity)
+  { id: 'headless',  group: 'server',  label: 'Headless Unity',    desc: 'Game Server Instance',             x: 3660, y: 1540, w: BIG_W,  h: BIG_H,  icon: Server,  color: 'orange', status: 'ACTIVE' },
+  { id: 'physics',   group: 'server',  label: 'PhysicsManager',    desc: 'CdA, Draft (55% max), Server-Auth', x: 4180, y: 1550, w: HERO_W, h: HERO_H, icon: Zap,     color: 'orange', status: 'STABLE' },
+  { id: 'races',     group: 'server',  label: 'EventManager',      desc: '10+ Race Types, Rankings',         x: 3660, y: 1840, w: HERO_W, h: HERO_H, icon: Flag,    color: 'orange', status: 'PEAK' },
+  { id: 'pacebots',  group: 'server',  label: 'PaceBots',          desc: 'Server-side AI, per-event',        x: 4120, y: 1840, w: NODE_W, h: NODE_H, icon: Bot,     color: 'orange', status: 'STABLE' },
 
-  // ── External Services ──
-  { id: 'api',       group: 'services',     label: 'PHP API',      desc: '~90 endpoints, IIS/Azure',         x: 140,  y: 2570, w: HERO_W, h: HERO_H, icon: Globe,   color: 'rose', status: 'LEGACY' },
-  { id: 'cdn',       group: 'services',     label: 'Azure CDN',    desc: 'Kits, i18n, Routes',               x: 580,  y: 2580, w: NODE_W, h: NODE_H, icon: Cloud,   color: 'rose', status: 'STABLE' },
-  { id: 'sql',       group: 'services',     label: 'SQL Server',   desc: 'T-SQL / dbo schema',               x: 140,  y: 2770, w: HERO_W, h: HERO_H, icon: Database, color: 'rose', status: 'ACTIVE' },
-  { id: 'snowflake', group: 'services',     label: 'Snowflake DB', desc: 'Performance / Usage Metrics',      x: 580,  y: 2780, w: NODE_W, h: NODE_H, icon: Database, color: 'rose', status: 'ACTIVE' },
+  // ═══════════════════════════════════════════════════════════════
+  // BAND 3 — External / Supporting
+  // ═══════════════════════════════════════════════════════════════
 
-  // ── Integrations ──
-  { id: 'tp',        group: 'integrations', label: 'TrainingPeaks',  desc: 'Workout Sync, TP API',           x: 1220, y: 2570, w: NODE_W, h: NODE_H, icon: Calendar,       color: 'amber', status: 'STABLE' },
-  { id: 'strava',    group: 'integrations', label: 'Strava',         desc: 'OAuth / Activity Upload',        x: 1580, y: 2580, w: NODE_W, h: NODE_H, icon: Activity,       color: 'amber', status: 'ACTIVE' },
-  { id: 'intervals', group: 'integrations', label: 'Intervals.icu',  desc: 'Workout Sync',                   x: 1220, y: 2760, w: NODE_W, h: NODE_H, icon: BarChart,       color: 'amber', status: 'STABLE' },
-  { id: 'discord',   group: 'integrations', label: 'Discord',        desc: 'Rich Presence SDK',              x: 1580, y: 2770, w: NODE_W, h: NODE_H, icon: MessageCircle,  color: 'amber', status: 'ACTIVE' },
+  // External Services
+  { id: 'api',       group: 'services',     label: 'PHP API',      desc: '~90 endpoints, IIS/Azure',         x: 120,  y: 2520, w: HERO_W, h: HERO_H, icon: Globe,   color: 'rose', status: 'LEGACY' },
+  { id: 'cdn',       group: 'services',     label: 'Azure CDN',    desc: 'Kits, i18n, Routes',               x: 620,  y: 2540, w: NODE_W, h: NODE_H, icon: Cloud,   color: 'rose', status: 'STABLE' },
+  { id: 'sql',       group: 'services',     label: 'SQL Server',   desc: 'T-SQL / dbo schema',               x: 120,  y: 2770, w: HERO_W, h: HERO_H, icon: Database, color: 'rose', status: 'ACTIVE' },
+  { id: 'snowflake', group: 'services',     label: 'Snowflake DB', desc: 'Performance / Usage Metrics',      x: 620,  y: 2790, w: NODE_W, h: NODE_H, icon: Database, color: 'rose', status: 'ACTIVE' },
+
+  // File Export
+  { id: 'fitservice', group: 'fit',    label: 'FITFileService',    desc: 'Dynastream SDK, Dev Fields',       x: 1500, y: 2520, w: HERO_W, h: HERO_H, icon: File,    color: 'indigo', status: 'ACTIVE' },
+
+  // TP Hub Mobile
+  { id: 'tpHub',     group: 'tphub',   label: 'TP Hub Mobile',     desc: 'React Native — mDNS, TCP:7779',   x: 2280, y: 2520, w: HERO_W, h: HERO_H, icon: Smartphone, color: 'amber', status: 'ACTIVE' },
+
+  // Integrations
+  { id: 'tp',        group: 'integrations', label: 'TrainingPeaks',  desc: 'Workout Sync, TP API',           x: 3060, y: 2520, w: NODE_W, h: NODE_H, icon: Calendar,       color: 'amber', status: 'STABLE' },
+  { id: 'strava',    group: 'integrations', label: 'Strava',         desc: 'OAuth / Activity Upload',        x: 3500, y: 2540, w: NODE_W, h: NODE_H, icon: Activity,       color: 'amber', status: 'ACTIVE' },
+  { id: 'intervals', group: 'integrations', label: 'Intervals.icu',  desc: 'Workout Sync',                   x: 3060, y: 2780, w: NODE_W, h: NODE_H, icon: BarChart,       color: 'amber', status: 'STABLE' },
+  { id: 'discord',   group: 'integrations', label: 'Discord',        desc: 'Rich Presence SDK',              x: 3500, y: 2800, w: NODE_W, h: NODE_H, icon: MessageCircle,  color: 'amber', status: 'ACTIVE' },
 ]
 
 export const archEdges: ArchEdge[] = [
   // ═══════════════════════════════════════════════
-  // FSM: Branching flowchart
+  // FSM: Horizontal pipeline
   // ═══════════════════════════════════════════════
 
-  // Boot wave (thick strokes — primary journey; always visible above group chrome)
+  // Boot strip (thick — primary journey)
   { id: 'e1', from: 'init',    to: 'loadAcc',  color: '#00F0FF', strokeW: '3' },
   { id: 'e2', from: 'loadAcc', to: 'verCheck', color: '#00F0FF', strokeW: '3' },
   { id: 'e3', from: 'verCheck', to: 'inAcc',   color: '#00F0FF', strokeW: '3' },

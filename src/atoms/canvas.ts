@@ -6,7 +6,7 @@ export interface Transform {
   scale: number
 }
 
-export const INITIAL_TRANSFORM: Transform = { x: 12, y: 6, scale: 0.34 }
+export const INITIAL_TRANSFORM: Transform = { x: 10, y: 5, scale: 0.24 }
 
 export const canvasTransformAtom = atom<Transform>(INITIAL_TRANSFORM)
 export const isDraggingAtom = atom(false)

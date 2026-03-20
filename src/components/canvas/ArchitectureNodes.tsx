@@ -1,7 +1,10 @@
-import { useAtom } from 'jotai'
+import { useRef, useCallback } from 'react'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { archNodes } from '../../data/architecture'
 import { nodeDetails } from '../../data/nodeDetails'
 import { selectedNodeAtom } from '../../atoms/selection'
+import { nodePositionsAtom, draggingNodeAtom } from '../../atoms/nodePositions'
+import { canvasTransformAtom } from '../../atoms/canvas'
 import { getIndicatorColor, getIconTintClass } from '../../lib/architecture/colors'
 import type { AccentColor, NodeStatus } from '../../types/architecture'
 
@@ -62,12 +65,82 @@ const selectedRingByColor: Record<AccentColor, string> = {
   amber:   '0 0 0 2px rgba(245, 158, 11, 0.5), 0 0 20px rgba(245, 158, 11, 0.25)',
 }
 
+const DRAG_THRESHOLD = 4
+
 export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
   const [selectedNodeId, setSelectedNodeId] = useAtom(selectedNodeAtom)
+  const positions = useAtomValue(nodePositionsAtom)
+  const setPositions = useSetAtom(nodePositionsAtom)
+  const setDraggingNode = useSetAtom(draggingNodeAtom)
+  const transform = useAtomValue(canvasTransformAtom)
+
+  const dragStateRef = useRef<{
+    nodeId: string
+    startMouseX: number
+    startMouseY: number
+    startNodeX: number
+    startNodeY: number
+    didDrag: boolean
+  } | null>(null)
+
+  const handleNodeMouseDown = useCallback((nodeId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    const pos = positions[nodeId]
+    if (!pos) return
+
+    dragStateRef.current = {
+      nodeId,
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startNodeX: pos.x,
+      startNodeY: pos.y,
+      didDrag: false,
+    }
+
+    const handleMouseMove = (me: MouseEvent) => {
+      const state = dragStateRef.current
+      if (!state) return
+
+      const dx = me.clientX - state.startMouseX
+      const dy = me.clientY - state.startMouseY
+
+      if (!state.didDrag && Math.sqrt(dx * dx + dy * dy) < DRAG_THRESHOLD) return
+
+      state.didDrag = true
+      setDraggingNode(state.nodeId)
+      setPositions((prev) => ({
+        ...prev,
+        [state.nodeId]: {
+          x: state.startNodeX + dx / transform.scale,
+          y: state.startNodeY + dy / transform.scale,
+        },
+      }))
+    }
+
+    const handleMouseUp = () => {
+      const state = dragStateRef.current
+      dragStateRef.current = null
+      setDraggingNode(null)
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+
+      if (state && !state.didDrag) {
+        const hasDetail = state.nodeId in nodeDetails
+        if (hasDetail) {
+          setSelectedNodeId(selectedNodeId === state.nodeId ? null : state.nodeId)
+        }
+      }
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }, [positions, transform.scale, setPositions, setDraggingNode, selectedNodeId, setSelectedNodeId])
 
   return (
     <>
       {archNodes.map((node) => {
+        const pos = positions[node.id] ?? { x: node.x, y: node.y }
         const isFaded = focusGroup !== null && focusGroup !== node.group
         const isSelected = selectedNodeId === node.id
         const hasDetail = node.id in nodeDetails
@@ -85,10 +158,10 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
         return (
           <div
             key={node.id}
-            className={`absolute z-10 rounded-xl backdrop-blur-lg overflow-hidden transition-all duration-200 hover:-translate-y-0.5 ${hasDetail ? 'cursor-pointer' : 'cursor-default'}`}
+            className={`absolute z-10 rounded-xl backdrop-blur-lg overflow-hidden transition-shadow duration-200 hover:-translate-y-0.5 ${hasDetail ? 'cursor-pointer' : 'cursor-grab'}`}
             style={{
-              left: node.x,
-              top: node.y,
+              left: pos.x,
+              top: pos.y,
               width: node.w,
               height: node.h,
               background: 'var(--surface-glass)',
@@ -98,11 +171,7 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
               filter: isFaded ? 'grayscale(100%)' : 'none',
               zIndex: isSelected ? 30 : 10,
             }}
-            onMouseDown={(e) => e.stopPropagation()}
-            onClick={() => {
-              if (isFaded || !hasDetail) return
-              setSelectedNodeId(isSelected ? null : node.id)
-            }}
+            onMouseDown={(e) => handleNodeMouseDown(node.id, e)}
             onMouseEnter={(e) => {
               if (!isFaded && !isSelected) e.currentTarget.style.boxShadow = glowByColor[node.color]
             }}
@@ -116,15 +185,15 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
               style={{ boxShadow: isFaded ? 'none' : '0 0 8px currentColor' }}
             />
 
-            <div className={`${node.h <= 115 ? 'p-2.5' : 'p-4'} flex flex-col h-full`}>
+            <div className={`${node.h <= 130 ? 'p-2.5' : 'p-4'} flex flex-col h-full`}>
               {/* Top row: icon + status badge */}
-              <div className={`flex justify-between items-start ${node.h <= 115 ? 'mb-1' : 'mb-2'}`}>
-                <div className={`${node.h <= 115 ? 'p-1' : 'p-2'} rounded-lg shrink-0 ${iconClass}`}>
-                  <Icon size={node.h <= 115 ? 14 : 20} />
+              <div className={`flex justify-between items-start ${node.h <= 130 ? 'mb-1' : 'mb-2'}`}>
+                <div className={`${node.h <= 130 ? 'p-1' : 'p-2'} rounded-lg shrink-0 ${iconClass}`}>
+                  <Icon size={node.h <= 130 ? 14 : 20} />
                 </div>
                 {badge && (
                   <span
-                    className={`px-2 py-0.5 rounded ${node.h <= 115 ? 'text-[9px]' : 'text-[11px]'} font-display font-bold tracking-wide`}
+                    className={`px-2 py-0.5 rounded ${node.h <= 130 ? 'text-[9px]' : 'text-[11px]'} font-display font-bold tracking-wide`}
                     style={{ backgroundColor: badge.bg, color: badge.text }}
                   >
                     {node.status}
@@ -134,13 +203,13 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
 
               {/* Title + description */}
               <h4
-                className={`${node.h <= 115 ? 'text-sm' : 'text-base'} font-display font-bold tracking-tight leading-tight`}
+                className={`${node.h <= 130 ? 'text-sm' : 'text-base'} font-display font-bold tracking-tight leading-tight`}
                 style={{ color: 'var(--text-primary)' }}
               >
                 {node.label}
               </h4>
               <p
-                className={`${node.h <= 115 ? 'text-xs' : 'text-sm'} font-sans leading-snug mt-0.5 truncate`}
+                className={`${node.h <= 130 ? 'text-xs' : 'text-sm'} font-sans leading-snug mt-0.5 truncate`}
                 style={{ color: 'var(--text-muted)' }}
               >
                 {node.desc}

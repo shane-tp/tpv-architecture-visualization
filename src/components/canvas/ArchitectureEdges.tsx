@@ -2,6 +2,8 @@ import { useAtomValue } from 'jotai'
 import { archEdges, archNodes, CANVAS_W, CANVAS_H } from '../../data/architecture'
 import { getAnchors, buildPath } from '../../lib/architecture/geometry'
 import { selectedNodeAtom } from '../../atoms/selection'
+import { nodePositionsAtom } from '../../atoms/nodePositions'
+import type { ArchNode } from '../../types/architecture'
 
 interface ArchitectureEdgesProps {
   focusGroup: string | null
@@ -9,6 +11,7 @@ interface ArchitectureEdgesProps {
 
 export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
   const selectedNodeId = useAtomValue(selectedNodeAtom)
+  const positions = useAtomValue(nodePositionsAtom)
 
   const highlightedGroups = new Set<string>()
   if (selectedNodeId) {
@@ -20,6 +23,12 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
         if (peer) highlightedGroups.add(peer.group)
       }
     }
+  }
+
+  function withLivePos(node: ArchNode): ArchNode {
+    const pos = positions[node.id]
+    if (!pos) return node
+    return { ...node, x: pos.x, y: pos.y }
   }
 
   return (
@@ -71,22 +80,24 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
       </defs>
 
       {archEdges.map((edge) => {
-        const from = archNodes.find((n) => n.id === edge.from)
-        const to = archNodes.find((n) => n.id === edge.to)
-        if (!from || !to) return null
+        const fromStatic = archNodes.find((n) => n.id === edge.from)
+        const toStatic = archNodes.find((n) => n.id === edge.to)
+        if (!fromStatic || !toStatic) return null
+
+        const from = withLivePos(fromStatic)
+        const to = withLivePos(toStatic)
 
         let opacity = 1
         if (focusGroup) {
-          const intraFsm = from.group === 'fsm' && to.group === 'fsm'
-          // Sidebar "focus" must never hide the FSM journey (boot strip + flowchart).
-          if (!intraFsm && from.group !== focusGroup && to.group !== focusGroup) {
+          const intraFsm = fromStatic.group === 'fsm' && toStatic.group === 'fsm'
+          if (!intraFsm && fromStatic.group !== focusGroup && toStatic.group !== focusGroup) {
             opacity = 0.05
           }
         }
         if (selectedNodeId && opacity > 0.05) {
           const isConnected = edge.from === selectedNodeId || edge.to === selectedNodeId
-          const bothInHighlighted = highlightedGroups.has(from.group) && highlightedGroups.has(to.group)
-          const bothFsm = from.group === 'fsm' && to.group === 'fsm'
+          const bothInHighlighted = highlightedGroups.has(fromStatic.group) && highlightedGroups.has(toStatic.group)
+          const bothFsm = fromStatic.group === 'fsm' && toStatic.group === 'fsm'
           if (!isConnected && !bothInHighlighted && !bothFsm) opacity = Math.min(opacity, 0.2)
         }
 

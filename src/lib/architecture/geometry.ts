@@ -11,7 +11,7 @@ export function getAnchors(from: ArchNode, to: ArchNode): Anchors {
 
   let startX: number, startY: number, endX: number, endY: number
 
-  if (Math.abs(dx) > Math.abs(dy)) {
+  if (Math.abs(dx) > Math.abs(dy) * 0.55) {
     if (dx > 0) {
       startX = from.x + from.w; startY = fy; endX = to.x; endY = ty
     } else {
