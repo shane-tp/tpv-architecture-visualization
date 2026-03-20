@@ -82,7 +82,8 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
         if (selectedNodeId && opacity > 0.05) {
           const isConnected = edge.from === selectedNodeId || edge.to === selectedNodeId
           const bothInHighlighted = highlightedGroups.has(from.group) && highlightedGroups.has(to.group)
-          if (!isConnected && !bothInHighlighted) opacity = Math.min(opacity, 0.2)
+          const bothFsm = from.group === 'fsm' && to.group === 'fsm'
+          if (!isConnected && !bothInHighlighted && !bothFsm) opacity = Math.min(opacity, 0.2)
         }
 
         const anchors = getAnchors(from, to)

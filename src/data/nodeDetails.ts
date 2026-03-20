@@ -719,6 +719,64 @@ export const nodeDetails: Record<string, NodeDetail> = {
     notes: 'PaceBots are invisible from the client perspective — they look like real riders. Server assigns them via paceBotIndicies in the server config, and they run through the same PhysicsManager pipeline as human players.',
   },
 
+  netServ: {
+    title: 'NetServManager — Companion TCP Server',
+    file: 'Client/Assets/_TPV/Client/Scripts/NetServ/Internal/NetServManager.cs',
+    stats: [
+      { label: 'Port', value: '7779 (TPV_NETSERV_PORT)' },
+      { label: 'Protocol', value: 'Custom binary over TCP' },
+      { label: 'Discovery', value: 'mDNS (_tpvirtual._tcp)' },
+      { label: 'Update Rate', value: 'State 1Hz, Ride/World/Route staggered at serverTick % 20' },
+      { label: 'Managed By', value: 'App.netServManager' },
+    ],
+    items: [
+      {
+        heading: 'Message Types (0x0000–0x0010)',
+        entries: [
+          'HEARTBEAT (0x0000)',
+          'VERSION (0x0001)',
+          'AUTHENTICATE (0x0002)',
+          'CHAT_SEND / CHAT_RECV (0x0003/04)',
+          'STRING_CHECK (0x0005)',
+          'CHAT_SCOPES (0x0006)',
+          'REMOTE_CONTROL (0x0007)',
+          'STATE_DATA (0x0008)',
+          'WORLD_DATA (0x0009)',
+          'RIDE_DATA (0x000A)',
+          'ROUTE_DATA (0x000B)',
+          'EVENT_DATA (0x000C)',
+          'WORKOUT / WORKOUT_DATA (0x000D/0E)',
+          'ACTIONS_DATA (0x000F)',
+          'AUTHENTICATE_RESULT (0x0010)',
+        ],
+      },
+      {
+        heading: 'Action Bitmask (ACTIONS_DATA)',
+        entries: [
+          'WORKOUT_SKIP_FORWARD/BACK, DIFFICULTY_UP/DOWN',
+          'WORKOUT_PAUSE, RESISTANCE_MODE, RESISTANCE_UP/DOWN',
+          'SELECT_LEFT/RIGHT, CRUISE_CONTROL, RIDE_LEADER_CONTROLS',
+          'UTURN, BREAK, LAP, CHAPEAU',
+          'JOIN, CHANGE_ROUTE, SCREENSHOT, CAMERA_NEXT',
+          'STATS_GRAPH, ROUTE_PROFILE, CHAT',
+        ],
+      },
+      {
+        heading: 'Data Send Cadence (FixedUpdate)',
+        entries: [
+          'STATE_DATA: every 1 second (all states)',
+          'ACTIONS_DATA: every 1 second (IN_WORLD only)',
+          'WORLD_DATA: serverTick % 20 == 0',
+          'RIDE_DATA: serverTick % 20 == 4',
+          'ROUTE_DATA: serverTick % 20 == 8',
+          'EVENT_DATA: serverTick % 20 == 12 (if event active)',
+          'WORKOUT_DATA: serverTick % 20 == 16 (if workout active)',
+        ],
+      },
+    ],
+    notes: 'Separate from the Riptide game network (port 7777). NetServManager runs its own TCP listener on port 7779 and broadcasts via mDNS. Uses NetServPeers for connection management, NetServSend/NetServReceive for packet handling. Platform-specific mDNS: NetServBroadcasterMDNSiOS on iOS, NetServBroadcasterMDNS elsewhere.',
+  },
+
   fitservice: {
     title: 'FIT File Recording',
     file: 'FITFileService/Assets/_TPV/FITFileService/Scripts/App.cs',

@@ -116,15 +116,15 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
               style={{ boxShadow: isFaded ? 'none' : '0 0 8px currentColor' }}
             />
 
-            <div className={`${node.h < 100 ? 'p-3' : 'p-4'} flex flex-col h-full`}>
+            <div className={`${node.h <= 115 ? 'p-2.5' : 'p-4'} flex flex-col h-full`}>
               {/* Top row: icon + status badge */}
-              <div className={`flex justify-between items-start ${node.h < 100 ? 'mb-1' : 'mb-2'}`}>
-                <div className={`${node.h < 100 ? 'p-1.5' : 'p-2'} rounded-lg shrink-0 ${iconClass}`}>
-                  <Icon size={node.h < 100 ? 16 : 20} />
+              <div className={`flex justify-between items-start ${node.h <= 115 ? 'mb-1' : 'mb-2'}`}>
+                <div className={`${node.h <= 115 ? 'p-1' : 'p-2'} rounded-lg shrink-0 ${iconClass}`}>
+                  <Icon size={node.h <= 115 ? 14 : 20} />
                 </div>
                 {badge && (
                   <span
-                    className={`px-2 py-0.5 rounded ${node.h < 100 ? 'text-[9px]' : 'text-[11px]'} font-display font-bold tracking-wide`}
+                    className={`px-2 py-0.5 rounded ${node.h <= 115 ? 'text-[9px]' : 'text-[11px]'} font-display font-bold tracking-wide`}
                     style={{ backgroundColor: badge.bg, color: badge.text }}
                   >
                     {node.status}
@@ -134,13 +134,13 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
 
               {/* Title + description */}
               <h4
-                className={`${node.h < 100 ? 'text-sm' : 'text-base'} font-display font-bold tracking-tight leading-tight`}
+                className={`${node.h <= 115 ? 'text-sm' : 'text-base'} font-display font-bold tracking-tight leading-tight`}
                 style={{ color: 'var(--text-primary)' }}
               >
                 {node.label}
               </h4>
               <p
-                className={`${node.h < 100 ? 'text-xs' : 'text-sm'} font-sans leading-snug mt-0.5 truncate`}
+                className={`${node.h <= 115 ? 'text-xs' : 'text-sm'} font-sans leading-snug mt-0.5 truncate`}
                 style={{ color: 'var(--text-muted)' }}
               >
                 {node.desc}
