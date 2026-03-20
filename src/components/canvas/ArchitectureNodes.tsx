@@ -18,21 +18,22 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
         return (
           <div
             key={node.id}
-            className={`absolute z-10 flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-200 hover:-translate-y-px ${accentClasses}`}
+            className={`absolute z-10 flex items-center gap-3 px-4 py-3 rounded-2xl border backdrop-blur-lg transition-all duration-200 hover:-translate-y-px ${accentClasses}`}
             style={{
               left: node.x,
               top: node.y,
               width: node.w,
               height: node.h,
-              backgroundColor: 'var(--surface-card)',
+              background: 'var(--surface-glass)',
               boxShadow: isFaded ? 'none' : 'var(--node-shadow), var(--node-inset)',
               opacity: isFaded ? 0.06 : 1,
               filter: isFaded ? 'grayscale(100%)' : 'none',
             }}
           >
-            {/* Left accent rail */}
+            {/* Left accent rail with glow */}
             <div
               className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full ${indicatorClass}`}
+              style={{ boxShadow: isFaded ? 'none' : '0 0 8px currentColor' }}
             />
 
             {/* Icon chip */}
@@ -43,13 +44,13 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
             {/* Labels */}
             <div className="flex flex-col justify-center min-w-0 flex-1">
               <div
-                className="text-[13px] font-semibold leading-tight truncate"
+                className="text-[13px] font-semibold font-display leading-tight truncate tracking-tight"
                 style={{ color: 'var(--text-primary)' }}
               >
                 {node.label}
               </div>
               <div
-                className="text-[11px] font-mono leading-snug truncate mt-0.5"
+                className="text-[11px] font-display leading-snug truncate mt-0.5"
                 style={{ color: 'var(--text-muted)' }}
               >
                 {node.desc}

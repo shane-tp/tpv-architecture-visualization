@@ -23,6 +23,13 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
         >
           <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--arrow-fill)" />
         </marker>
+        <filter id="glow-edge" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
       </defs>
 
       {archEdges.map((edge) => {
@@ -62,6 +69,7 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
         const pathData = `M ${startX} ${startY} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${endX} ${endY}`
         const strokeColor = edge.color ?? '#4B5563'
         const strokeWidth = edge.strokeW ?? '2'
+        const useGlow = edge.animate || edge.dashed
 
         return (
           <g key={edge.id} style={{ opacity, transition: 'opacity 0.3s ease' }}>
@@ -73,6 +81,7 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
               strokeDasharray={edge.dashed ? '6,4' : 'none'}
               markerEnd="url(#arrow)"
               strokeLinecap="round"
+              filter={useGlow && opacity > 0.5 ? 'url(#glow-edge)' : undefined}
             />
             {edge.animate && opacity > 0.5 && (
               <circle r="3.5" fill={strokeColor} opacity={0.9}>
@@ -91,7 +100,7 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
                 x={(startX + endX) / 2}
                 y={(startY + endY) / 2 - 8}
                 fill={edge.textCol ?? 'var(--edge-label-fill)'}
-                className="text-[10px] font-mono font-semibold pointer-events-none"
+                className="text-[10px] font-display font-semibold pointer-events-none"
                 textAnchor="middle"
               >
                 {edge.label}

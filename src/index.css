@@ -4,61 +4,85 @@
 
 @layer base {
   :root {
-    --bg-app: #F4F6FA;
-    --bg-elevated: #FFFFFF;
-    --surface-card: #FFFFFF;
-    --surface-card-hover: #F8FAFC;
+    --bg-app: #f8f9fe;
+    --bg-elevated: #f1f3f7;
+    --surface-card: rgba(255, 255, 255, 0.7);
+    --surface-card-hover: rgba(255, 255, 255, 0.85);
 
-    --border-subtle: #E2E8F0;
-    --border-strong: #CBD5E1;
+    --border-subtle: rgba(0, 106, 113, 0.1);
+    --border-strong: rgba(0, 106, 113, 0.2);
 
-    --text-primary: #0F172A;
-    --text-secondary: #475569;
-    --text-muted: #64748B;
+    --text-primary: #0c0e12;
+    --text-secondary: #44474b;
+    --text-muted: #74777f;
 
-    --canvas-bg: #EEF1F6;
-    --canvas-grid-color: rgba(15, 23, 42, 0.05);
+    --canvas-bg: #f8f9fe;
+    --canvas-grid-color: rgba(0, 106, 113, 0.04);
 
-    --edge-label-fill: #475569;
-    --arrow-fill: #94A3B8;
+    --edge-label-fill: #44474b;
+    --arrow-fill: #74777f;
 
-    --node-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.07);
-    --node-shadow-hover: 0 2px 4px rgba(15, 23, 42, 0.07), 0 8px 24px rgba(15, 23, 42, 0.10);
+    --node-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.07);
+    --node-shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.07), 0 8px 24px rgba(0, 0, 0, 0.10);
     --node-inset: none;
 
-    --group-label-bg: #FFFFFF;
+    --group-label-bg: #f8f9fe;
 
     --toolbar-bg: rgba(255, 255, 255, 0.85);
-    --toolbar-border: rgba(226, 232, 240, 0.8);
+    --toolbar-border: rgba(0, 106, 113, 0.1);
+
+    --neon-cyan: #006a71;
+    --neon-magenta: #a900a9;
+    --neon-lime: #0d6100;
+    --neon-error: #ba1a1a;
+
+    --surface-glass: rgba(255, 255, 255, 0.7);
+    --surface-glass-border: rgba(0, 106, 113, 0.1);
+
+    --glow-cyan: 0 0 20px rgba(0, 106, 113, 0.15);
+    --glow-magenta: 0 0 20px rgba(169, 0, 169, 0.15);
+    --glow-lime: 0 0 20px rgba(13, 97, 0, 0.15);
   }
 
   .dark {
-    --bg-app: #0B0F14;
-    --bg-elevated: #121826;
-    --surface-card: #151C2C;
-    --surface-card-hover: #1A2336;
+    --bg-app: #0c0e12;
+    --bg-elevated: #171a1e;
+    --surface-card: rgba(23, 26, 30, 0.6);
+    --surface-card-hover: rgba(40, 44, 50, 0.7);
 
-    --border-subtle: #243044;
-    --border-strong: #334155;
+    --border-subtle: rgba(70, 72, 76, 0.3);
+    --border-strong: rgba(115, 117, 122, 0.3);
 
-    --text-primary: #E8EDF5;
-    --text-secondary: #9AA4B2;
-    --text-muted: #7B8694;
+    --text-primary: #f8f9fe;
+    --text-secondary: #a9abb0;
+    --text-muted: #73757a;
 
-    --canvas-bg: #080C12;
-    --canvas-grid-color: rgba(148, 163, 184, 0.05);
+    --canvas-bg: #0c0e12;
+    --canvas-grid-color: rgba(0, 238, 252, 0.03);
 
-    --edge-label-fill: #9AA4B2;
-    --arrow-fill: #6B7280;
+    --edge-label-fill: #a9abb0;
+    --arrow-fill: #73757a;
 
-    --node-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
-    --node-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.45);
-    --node-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --node-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --node-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.6);
+    --node-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
-    --group-label-bg: #0B0F14;
+    --group-label-bg: #0c0e12;
 
-    --toolbar-bg: rgba(18, 24, 38, 0.88);
-    --toolbar-border: rgba(36, 48, 68, 0.8);
+    --toolbar-bg: rgba(23, 26, 30, 0.85);
+    --toolbar-border: rgba(0, 238, 252, 0.1);
+
+    --neon-cyan: #8ff5ff;
+    --neon-magenta: #ff51fa;
+    --neon-lime: #8eff71;
+    --neon-error: #ff716c;
+
+    --surface-glass: rgba(23, 26, 30, 0.6);
+    --surface-glass-border: rgba(143, 245, 255, 0.1);
+
+    --glow-cyan: 0 0 20px rgba(0, 238, 252, 0.3);
+    --glow-magenta: 0 0 20px rgba(255, 81, 250, 0.3);
+    --glow-lime: 0 0 20px rgba(142, 255, 113, 0.3);
   }
 
   html {
@@ -79,6 +103,17 @@
   .transition-theme {
     transition: background-color 300ms ease, border-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
   }
+
+  .glass {
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--surface-glass-border);
+  }
+
+  .font-headline {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -92,7 +127,7 @@
 }
 
 ::selection {
-  background-color: rgba(99, 102, 241, 0.25);
+  background-color: rgba(0, 238, 252, 0.25);
 }
 
 * {

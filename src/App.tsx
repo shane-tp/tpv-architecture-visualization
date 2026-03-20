@@ -3,6 +3,7 @@ import { ThemeSync } from './components/theme/ThemeSync'
 import { Sidebar } from './components/sidebar/Sidebar'
 import { ArchitectureCanvas } from './components/canvas/ArchitectureCanvas'
 import { TechDebtPanel } from './components/debt/TechDebtPanel'
+import { BottomMetricsBar } from './components/BottomMetricsBar'
 import type { TabId } from './types/architecture'
 
 export default function App() {
@@ -19,13 +20,14 @@ export default function App() {
           focusGroup={focusGroup}
           setFocusGroup={setFocusGroup}
         />
-        <main className="flex-1 relative overflow-hidden">
+        <main className="flex-1 relative overflow-hidden pb-11">
           {activeTab === 'canvas' ? (
             <ArchitectureCanvas focusGroup={focusGroup} />
           ) : (
             <TechDebtPanel />
           )}
         </main>
+        <BottomMetricsBar />
       </div>
     </>
   )
