@@ -14,6 +14,14 @@ export interface ArchGroup {
   color: AccentColor
 }
 
+export type NodeStatus = 'STABLE' | 'ACTIVE' | 'LEGACY' | 'PEAK' | 'DEBT_LCL' | 'LIVE'
+
+export interface NodeMetric {
+  label: string
+  value: number
+  unit?: string
+}
+
 export interface ArchNode {
   id: string
   group: string
@@ -25,6 +33,9 @@ export interface ArchNode {
   h: number
   icon: LucideIcon
   color: AccentColor
+  status?: NodeStatus
+  metric?: NodeMetric
+  tags?: string[]
 }
 
 export interface ArchEdge {
@@ -48,6 +59,14 @@ export interface DebtItem {
   effort?: string
   stability?: string
   details?: Record<string, string | number>
+}
+
+export interface NodeDetail {
+  title: string
+  file?: string
+  stats: { label: string; value: string }[]
+  items?: { heading: string; entries: string[] }[]
+  notes?: string
 }
 
 export interface Anchors {

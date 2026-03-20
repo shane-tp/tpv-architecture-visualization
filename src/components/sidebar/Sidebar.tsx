@@ -1,31 +1,33 @@
+import { useAtom } from 'jotai'
 import { LayoutTemplate, ShieldAlert, Layers } from 'lucide-react'
 import { archGroups } from '../../data/architecture'
 import { ThemeToggle } from '../theme/ThemeToggle'
-import type { TabId } from '../../types/architecture'
+import { activeTabAtom, focusGroupAtom } from '../../atoms/navigation'
 
-interface SidebarProps {
-  activeTab: TabId
-  setActiveTab: (tab: TabId) => void
-  focusGroup: string | null
-  setFocusGroup: (group: string | null) => void
-}
-
-export function Sidebar({ activeTab, setActiveTab, focusGroup, setFocusGroup }: SidebarProps) {
+export function Sidebar() {
+  const [activeTab, setActiveTab] = useAtom(activeTabAtom)
+  const [focusGroup, setFocusGroup] = useAtom(focusGroupAtom)
   return (
-    <aside className="w-72 shrink-0 flex flex-col z-20 transition-theme bg-[var(--bg-elevated)] backdrop-blur-xl border-r border-[var(--surface-glass-border)] shadow-[0_0_40px_rgba(0,240,255,0.05)] dark:shadow-[0_0_40px_rgba(0,240,255,0.08)]">
+    <aside
+      className="w-72 shrink-0 flex flex-col z-20 transition-theme backdrop-blur-xl"
+      style={{
+        backgroundColor: 'var(--bg-elevated)',
+        boxShadow: '20px 0 50px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 240, 255, 0.06)',
+      }}
+    >
       {/* Header */}
-      <div className="p-5 border-b border-[var(--border-subtle)]">
+      <div className="p-6 pb-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-gradient-to-br from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-600 rounded-xl shadow-lg shadow-cyan-500/20">
               <Layers className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-base font-bold font-display bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-cyan-500 dark:from-cyan-400 dark:to-cyan-300 tracking-tight">
+              <h1 className="text-lg font-bold font-display bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-cyan-500 dark:from-cyan-400 dark:to-cyan-300 tracking-tight drop-shadow-[0_0_8px_rgba(0,240,255,0.3)]">
                 TPV Explorer
               </h1>
-              <p className="text-[11px] font-display mt-0.5 uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-                Architecture Map
+              <p className="text-[10px] font-display mt-0.5 uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+                Architecture Explorer
               </p>
             </div>
           </div>
@@ -34,14 +36,7 @@ export function Sidebar({ activeTab, setActiveTab, focusGroup, setFocusGroup }: 
       </div>
 
       {/* Navigation */}
-      <div className="p-4 space-y-1 flex-1 overflow-y-auto">
-        <div
-          className="text-[10px] font-bold font-display uppercase tracking-[0.15em] px-3 py-2 mt-1"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          Main Views
-        </div>
-
+      <div className="px-4 space-y-1 flex-1 overflow-y-auto mt-4">
         <NavButton
           active={activeTab === 'canvas'}
           onClick={() => { setActiveTab('canvas'); setFocusGroup(null) }}
@@ -56,47 +51,59 @@ export function Sidebar({ activeTab, setActiveTab, focusGroup, setFocusGroup }: 
         />
 
         {activeTab === 'canvas' && (
-          <div className="mt-6">
-            <div
-              className="text-[10px] font-bold font-display uppercase tracking-[0.15em] px-3 py-2"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Focus Mode
+          <>
+            <div className="mt-8">
+              <div
+                className="text-[10px] font-bold font-display uppercase tracking-[0.15em] px-3 py-2"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                Focus Mode
+              </div>
+              <div className="space-y-0.5">
+                {archGroups.map((group) => (
+                  <button
+                    key={group.id}
+                    onClick={() => setFocusGroup(focusGroup === group.id ? null : group.id)}
+                    className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl text-sm font-medium font-display transition-all ${
+                      focusGroup === group.id
+                        ? 'text-[var(--neon-cyan)] bg-cyan-500/10 dark:bg-cyan-400/10'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-card-hover)]'
+                    }`}
+                  >
+                    <span className="tracking-tight">{group.label.split('(')[0]?.trim()}</span>
+                    {focusGroup === group.id && (
+                      <div className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400 shadow-lg shadow-cyan-500/60" />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="space-y-0.5">
-              {archGroups.map((group) => (
-                <button
-                  key={group.id}
-                  onClick={() => setFocusGroup(focusGroup === group.id ? null : group.id)}
-                  className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl text-sm font-medium font-display transition-all ${
-                    focusGroup === group.id
-                      ? 'text-[var(--neon-cyan)] bg-cyan-500/10 dark:bg-cyan-400/10'
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-card-hover)]'
-                  }`}
-                >
-                  <span className="tracking-tight">{group.label.split('(')[0]?.trim()}</span>
-                  {focusGroup === group.id && (
-                    <div className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400 shadow-lg shadow-cyan-500/60" />
-                  )}
-                </button>
-              ))}
+
+            <div className="mt-8 px-4">
+              <div
+                className="text-[10px] font-bold font-display uppercase tracking-[0.15em] mb-3"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                Legend
+              </div>
+              <div className="space-y-2">
+                <LegendLine color="#00F0FF" label="Data Flow" />
+                <LegendLine color="#8eff71" label="Hot Path" />
+                <LegendLine color="#ff51fa" label="External / API" />
+                <LegendLine color="var(--text-muted)" label="Async" dashed />
+              </div>
+              <div className="h-px mt-3 mb-3" style={{ background: 'var(--border-subtle)' }} />
+              <div className="space-y-2">
+                <LegendDot color="var(--neon-cyan)" label="Stable" />
+                <LegendDot color="var(--neon-lime)" label="Active / Peak" />
+                <LegendDot color="var(--neon-magenta)" label="Legacy" />
+                <LegendDot color="var(--neon-error)" label="Tech Debt" />
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
 
-      {/* Operator badge footer */}
-      <div className="p-5 transition-theme border-t border-[var(--border-subtle)]" style={{ backgroundColor: 'var(--bg-app)' }}>
-        <div className="flex items-center gap-3 p-3 rounded-xl glass">
-          <div className="w-8 h-8 rounded-full bg-cyan-500/20 dark:bg-cyan-400/20 flex items-center justify-center border border-cyan-500/30 dark:border-cyan-400/30">
-            <span className="text-xs font-bold font-display text-cyan-600 dark:text-cyan-400">EM</span>
-          </div>
-          <div>
-            <p className="text-xs font-bold font-display" style={{ color: 'var(--text-primary)' }}>SYS_OP_01</p>
-            <p className="text-[10px] font-display uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Authorized</p>
-          </div>
-        </div>
-      </div>
     </aside>
   )
 }
@@ -125,3 +132,24 @@ function NavButton({
     </button>
   )
 }
+
+function LegendLine({ color, label, dashed }: { color: string; label: string; dashed?: boolean }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <svg width="20" height="6" className="shrink-0">
+        <line x1="0" y1="3" x2="20" y2="3" stroke={color} strokeWidth="2" strokeDasharray={dashed ? '4,3' : 'none'} strokeLinecap="round" />
+      </svg>
+      <span className="text-[11px] font-display" style={{ color: 'var(--text-secondary)' }}>{label}</span>
+    </div>
+  )
+}
+
+function LegendDot({ color, label }: { color: string; label: string }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color, boxShadow: `0 0 6px ${color}` }} />
+      <span className="text-[11px] font-display" style={{ color: 'var(--text-secondary)' }}>{label}</span>
+    </div>
+  )
+}
+

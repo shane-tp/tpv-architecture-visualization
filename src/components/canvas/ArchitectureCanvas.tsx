@@ -1,27 +1,27 @@
-import { useState, useRef, useCallback } from 'react'
+import { useRef, useCallback } from 'react'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { CanvasBackground } from './CanvasBackground'
 import { ZoomToolbar } from './ZoomToolbar'
 import { ArchitectureEdges } from './ArchitectureEdges'
 import { ArchitectureGroups } from './ArchitectureGroups'
 import { ArchitectureNodes } from './ArchitectureNodes'
+import { selectedNodeAtom } from '../../atoms/selection'
+import { focusGroupAtom } from '../../atoms/navigation'
+import { canvasTransformAtom, isDraggingAtom, INITIAL_TRANSFORM } from '../../atoms/canvas'
 
-interface ArchitectureCanvasProps {
-  focusGroup: string | null
-}
+const PAN_THRESHOLD = 4
 
-interface Transform {
-  x: number
-  y: number
-  scale: number
-}
-
-const INITIAL_TRANSFORM: Transform = { x: 50, y: 50, scale: 0.55 }
-
-export function ArchitectureCanvas({ focusGroup }: ArchitectureCanvasProps) {
+export function ArchitectureCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [transform, setTransform] = useState<Transform>(INITIAL_TRANSFORM)
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const isPointerDown = useRef(false)
+  const dragStartRef = useRef({ x: 0, y: 0 })
+  const mouseDownPosRef = useRef({ x: 0, y: 0 })
+  const didDragRef = useRef(false)
+
+  const [transform, setTransform] = useAtom(canvasTransformAtom)
+  const [isDragging, setIsDragging] = useAtom(isDraggingAtom)
+  const focusGroup = useAtomValue(focusGroupAtom)
+  const clearSelection = useSetAtom(selectedNodeAtom)
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault()
@@ -30,33 +30,57 @@ export function ArchitectureCanvas({ focusGroup }: ArchitectureCanvasProps) {
       ...prev,
       scale: Math.min(Math.max(0.15, prev.scale + scaleAdjust), 3),
     }))
-  }, [])
+  }, [setTransform])
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    setIsDragging(true)
-    setDragStart({ x: e.clientX - transform.x, y: e.clientY - transform.y })
+    isPointerDown.current = true
+    dragStartRef.current = { x: e.clientX - transform.x, y: e.clientY - transform.y }
+    mouseDownPosRef.current = { x: e.clientX, y: e.clientY }
+    didDragRef.current = false
   }, [transform.x, transform.y])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isDragging) return
-    setTransform((prev) => ({
-      ...prev,
-      x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y,
-    }))
-  }, [isDragging, dragStart])
+    if (!isPointerDown.current) return
+    const dx = e.clientX - mouseDownPosRef.current.x
+    const dy = e.clientY - mouseDownPosRef.current.y
+    const distance = Math.sqrt(dx * dx + dy * dy)
 
-  const handleMouseUp = useCallback(() => setIsDragging(false), [])
+    if (!isDragging && distance > PAN_THRESHOLD) {
+      setIsDragging(true)
+      didDragRef.current = true
+    }
+
+    if (isDragging || distance > PAN_THRESHOLD) {
+      setTransform((prev) => ({
+        ...prev,
+        x: e.clientX - dragStartRef.current.x,
+        y: e.clientY - dragStartRef.current.y,
+      }))
+    }
+  }, [isDragging, setIsDragging, setTransform])
+
+  const handleMouseUp = useCallback(() => {
+    isPointerDown.current = false
+    if (!didDragRef.current) {
+      clearSelection(null)
+    }
+    setIsDragging(false)
+  }, [clearSelection, setIsDragging])
+
+  const handleMouseLeave = useCallback(() => {
+    isPointerDown.current = false
+    setIsDragging(false)
+  }, [setIsDragging])
 
   const zoomIn = useCallback(() => {
     setTransform((prev) => ({ ...prev, scale: Math.min(prev.scale + 0.1, 3) }))
-  }, [])
+  }, [setTransform])
 
   const zoomOut = useCallback(() => {
     setTransform((prev) => ({ ...prev, scale: Math.max(prev.scale - 0.1, 0.15) }))
-  }, [])
+  }, [setTransform])
 
-  const resetZoom = useCallback(() => setTransform(INITIAL_TRANSFORM), [])
+  const resetZoom = useCallback(() => setTransform(INITIAL_TRANSFORM), [setTransform])
 
   return (
     <div
@@ -67,7 +91,7 @@ export function ArchitectureCanvas({ focusGroup }: ArchitectureCanvasProps) {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
     >
       <CanvasBackground transform={transform} />
       <ZoomToolbar onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetZoom} />
