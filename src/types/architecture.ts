@@ -43,6 +43,11 @@ export interface DebtItem {
   title: string
   level: 'P0' | 'P1' | 'P2'
   desc: string
+  riskScore?: number
+  impact?: string
+  effort?: string
+  stability?: string
+  details?: Record<string, string | number>
 }
 
 export interface Anchors {
