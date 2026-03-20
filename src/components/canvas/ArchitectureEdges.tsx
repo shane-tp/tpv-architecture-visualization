@@ -77,7 +77,11 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
 
         let opacity = 1
         if (focusGroup) {
-          if (from.group !== focusGroup && to.group !== focusGroup) opacity = 0.05
+          const intraFsm = from.group === 'fsm' && to.group === 'fsm'
+          // Sidebar "focus" must never hide the FSM journey (boot strip + flowchart).
+          if (!intraFsm && from.group !== focusGroup && to.group !== focusGroup) {
+            opacity = 0.05
+          }
         }
         if (selectedNodeId && opacity > 0.05) {
           const isConnected = edge.from === selectedNodeId || edge.to === selectedNodeId
@@ -106,8 +110,8 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
               strokeWidth={strokeWidth}
               strokeDasharray={edge.dashed ? '6,4' : 'none'}
               strokeLinecap="round"
+              strokeLinejoin="round"
               filter={opacity > 0.5 ? 'url(#glow-edge)' : undefined}
-              opacity={0.7}
               markerEnd={`url(#${markerId})`}
             />
             {edge.animate && opacity > 0.5 && (

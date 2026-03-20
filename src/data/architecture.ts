@@ -7,8 +7,8 @@ import type { ArchGroup, ArchNode, ArchEdge } from '../types/architecture'
 
 export const NODE_W = 270
 export const NODE_H = 135
-export const CANVAS_W = 2500
-export const CANVAS_H = 3100
+export const CANVAS_W = 2800
+export const CANVAS_H = 3320
 
 const FSM_W = 230
 const FSM_H = 110
@@ -20,7 +20,7 @@ const BIG_W = 360
 const BIG_H = 170
 
 export const archGroups: ArchGroup[] = [
-  { id: 'fsm',          label: 'GAME STATE MACHINE',      x: 40,   y: 40,   w: 2260, h: 1070, color: 'cyan' },
+  { id: 'fsm',          label: 'GAME STATE MACHINE',      x: 40,   y: 40,   w: 2680, h: 1080, color: 'cyan' },
   { id: 'client',       label: 'CLIENT APPLICATION',      x: 40,   y: 1200, w: 980,  h: 520,  color: 'blue' },
   { id: 'systems',      label: 'GAME SYSTEMS',            x: 1120, y: 1200, w: 1120, h: 520,  color: 'purple' },
   { id: 'net',          label: 'NETWORKING',               x: 40,   y: 1800, w: 500,  h: 260,  color: 'emerald' },
@@ -32,29 +32,29 @@ export const archGroups: ArchGroup[] = [
 ]
 
 export const archNodes: ArchNode[] = [
-  // ── FSM: Branching flowchart ──
+  // ── FSM: Branching flowchart (organic "river" — boot tier uses a wave, not a flat grid) ──
 
-  // Tier 1 — Boot strip (wider 340px spacing)
-  { id: 'init',      group: 'fsm', label: 'Initializing',    desc: 'App.Awake() wires 65+ managers',     x: 80,   y: 100,  w: FSM_W, h: FSM_H, icon: Activity,  color: 'cyan', status: 'STABLE' },
-  { id: 'loadAcc',   group: 'fsm', label: 'Load Accounts',   desc: 'Loads local profile from device',    x: 420,  y: 100,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'ACTIVE' },
-  { id: 'verCheck',  group: 'fsm', label: 'Version Check',   desc: 'Compares build version to API',      x: 760,  y: 100,  w: FSM_W, h: FSM_H, icon: Code,      color: 'cyan', status: 'STABLE' },
-  { id: 'inAcc',     group: 'fsm', label: 'In Accounts',     desc: 'Login / create account UI',          x: 1100, y: 100,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'ACTIVE' },
+  // Tier 1 — Boot wave: alternate Y so connectors arc diagonally (more readable than one cramped line)
+  { id: 'init',      group: 'fsm', label: 'Initializing',    desc: 'App.Awake() wires 65+ managers',     x: 100,  y: 88,   w: FSM_W, h: FSM_H, icon: Activity,  color: 'cyan', status: 'STABLE' },
+  { id: 'loadAcc',   group: 'fsm', label: 'Load Accounts',   desc: 'Loads local profile from device',    x: 450,  y: 138,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'ACTIVE' },
+  { id: 'verCheck',  group: 'fsm', label: 'Version Check',   desc: 'Compares build version to API',      x: 800,  y: 88,   w: FSM_W, h: FSM_H, icon: Code,      color: 'cyan', status: 'STABLE' },
+  { id: 'inAcc',     group: 'fsm', label: 'In Accounts',     desc: 'Login / create account UI',          x: 1150, y: 138,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'ACTIVE' },
 
-  // Tier 2 — Branch: first-time vs returning (150px gap below tier 1)
-  { id: 'onboard',   group: 'fsm', label: 'Onboarding',      desc: 'EULA → Avatar → Profile wizard',     x: 760,  y: 360,  w: FSM_W, h: FSM_H, icon: Flag,      color: 'cyan', status: 'STABLE' },
-  { id: 'loadHub',   group: 'fsm', label: 'Load Hub',        desc: 'Addressables: Hub scene async',      x: 1100, y: 360,  w: FSM_W, h: FSM_H, icon: Layout,    color: 'cyan', status: 'ACTIVE' },
+  // Tier 2 — Branch (extra air below boot wave)
+  { id: 'onboard',   group: 'fsm', label: 'Onboarding',      desc: 'EULA → Avatar → Profile wizard',     x: 800,  y: 400,  w: FSM_W, h: FSM_H, icon: Flag,      color: 'cyan', status: 'STABLE' },
+  { id: 'loadHub',   group: 'fsm', label: 'Load Hub',        desc: 'Addressables: Hub scene async',      x: 1150, y: 400,  w: FSM_W, h: FSM_H, icon: Layout,    color: 'cyan', status: 'ACTIVE' },
 
-  // Tier 3 — Main L→R flow (120px gap below tier 2)
-  { id: 'hub',       group: 'fsm', label: 'In Hub',          desc: 'Main menu — events, routes, workouts',  x: 640,  y: 600,  w: BIG_W, h: BIG_H, icon: Globe,     color: 'cyan', status: 'PEAK' },
-  { id: 'pair',      group: 'fsm', label: 'Select Pairing',  desc: 'ANT+/BLE device discovery',          x: 1140, y: 630,  w: MID_W, h: MID_H, icon: Bluetooth, color: 'cyan', status: 'STABLE' },
-  { id: 'worldLoad', group: 'fsm', label: 'World Load',      desc: 'Addressables: world, avatars, routes', x: 1500, y: 630, w: MID_W, h: MID_H, icon: Globe,   color: 'cyan', status: 'ACTIVE' },
-  { id: 'world',     group: 'fsm', label: 'In World',        desc: 'Riding — physics, social, bots',     x: 1860, y: 600,  w: BIG_W, h: BIG_H, icon: Monitor,   color: 'cyan', status: 'PEAK' },
+  // Tier 3 — Main flow (staggered vertical rhythm, wider horizontal spread)
+  { id: 'hub',       group: 'fsm', label: 'In Hub',          desc: 'Main menu — events, routes, workouts',  x: 680,  y: 640,  w: BIG_W, h: BIG_H, icon: Globe,     color: 'cyan', status: 'PEAK' },
+  { id: 'pair',      group: 'fsm', label: 'Select Pairing',  desc: 'ANT+/BLE device discovery',          x: 1180, y: 675,  w: MID_W, h: MID_H, icon: Bluetooth, color: 'cyan', status: 'STABLE' },
+  { id: 'worldLoad', group: 'fsm', label: 'World Load',      desc: 'Addressables: world, avatars, routes', x: 1560, y: 675, w: MID_W, h: MID_H, icon: Globe,   color: 'cyan', status: 'ACTIVE' },
+  { id: 'world',     group: 'fsm', label: 'In World',        desc: 'Riding — physics, social, bots',     x: 1940, y: 640,  w: BIG_W, h: BIG_H, icon: Monitor,   color: 'cyan', status: 'PEAK' },
 
-  // Tier 4 — End states (110px gap below tier 3)
-  { id: 'logout',    group: 'fsm', label: 'Logout',          desc: 'Clear session, disconnect',          x: 120,  y: 870,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'STABLE' },
-  { id: 'quit',      group: 'fsm', label: 'Quit',            desc: 'Exit application',                   x: 440,  y: 870,  w: FSM_W, h: FSM_H, icon: Settings,  color: 'cyan' },
-  { id: 'ride',      group: 'fsm', label: 'End Ride',        desc: 'FIT upload, results review',         x: 960,  y: 860,  w: NODE_W, h: NODE_H, icon: Activity, color: 'cyan', status: 'ACTIVE' },
-  { id: 'pen',       group: 'fsm', label: 'Join Pen',        desc: 'Pre-race wait, entrant list',        x: 1560, y: 870,  w: MID_W, h: MID_H, icon: Flag,      color: 'cyan', status: 'STABLE' },
+  // Tier 4 — End states (pulled down for arrow clearance above hub ↔ logout)
+  { id: 'logout',    group: 'fsm', label: 'Logout',          desc: 'Clear session, disconnect',          x: 140,  y: 940,  w: FSM_W, h: FSM_H, icon: User,      color: 'cyan', status: 'STABLE' },
+  { id: 'quit',      group: 'fsm', label: 'Quit',            desc: 'Exit application',                   x: 480,  y: 940,  w: FSM_W, h: FSM_H, icon: Settings,  color: 'cyan' },
+  { id: 'ride',      group: 'fsm', label: 'End Ride',        desc: 'FIT upload, results review',         x: 1000, y: 930,  w: NODE_W, h: NODE_H, icon: Activity, color: 'cyan', status: 'ACTIVE' },
+  { id: 'pen',       group: 'fsm', label: 'Join Pen',        desc: 'Pre-race wait, entrant list',        x: 1620, y: 940,  w: MID_W, h: MID_H, icon: Flag,      color: 'cyan', status: 'STABLE' },
 
   // ── Client Application ──
   { id: 'stateMgr',  group: 'client',  label: 'StateManager',      desc: '14-State Enum FSM',                x: 140,  y: 1320, w: HERO_W, h: HERO_H, icon: Activity, color: 'blue', status: 'ACTIVE', metric: { label: 'STATES', value: 14 } },
@@ -101,10 +101,10 @@ export const archEdges: ArchEdge[] = [
   // FSM: Branching flowchart
   // ═══════════════════════════════════════════════
 
-  // Boot strip (L→R)
-  { id: 'e1', from: 'init',    to: 'loadAcc',  color: '#00F0FF' },
-  { id: 'e2', from: 'loadAcc', to: 'verCheck', color: '#00F0FF' },
-  { id: 'e3', from: 'verCheck', to: 'inAcc',   color: '#00F0FF' },
+  // Boot wave (thick strokes — primary journey; always visible above group chrome)
+  { id: 'e1', from: 'init',    to: 'loadAcc',  color: '#00F0FF', strokeW: '3' },
+  { id: 'e2', from: 'loadAcc', to: 'verCheck', color: '#00F0FF', strokeW: '3' },
+  { id: 'e3', from: 'verCheck', to: 'inAcc',   color: '#00F0FF', strokeW: '3' },
 
   // Branch from Accounts
   { id: 'e_first',      from: 'inAcc',   to: 'onboard', label: 'First Time', color: '#00F0FF' },

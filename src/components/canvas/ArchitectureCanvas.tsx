@@ -104,9 +104,9 @@ export function ArchitectureCanvas() {
           transition: isDragging ? 'none' : 'transform 75ms ease-out',
         }}
       >
-        <ArchitectureEdges focusGroup={focusGroup} />
         <ArchitectureGroups focusGroup={focusGroup} />
         <ArchitectureNodes focusGroup={focusGroup} />
+        <ArchitectureEdges focusGroup={focusGroup} />
       </div>
     </div>
   )

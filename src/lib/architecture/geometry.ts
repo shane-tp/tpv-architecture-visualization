@@ -37,6 +37,16 @@ export function buildPath(
   const dx = Math.abs(startX - endX)
   const dy = Math.abs(startY - endY)
 
+  // Straight segments read better for short hops (boot strip, adjacent FSM nodes).
+  const anchorDy = Math.abs(startY - endY)
+  const anchorDx = Math.abs(startX - endX)
+  if (anchorDy < 0.75 && anchorDx > 8) {
+    return `M ${startX} ${startY} L ${endX} ${endY}`
+  }
+  if (anchorDx < 0.75 && anchorDy > 8) {
+    return `M ${startX} ${startY} L ${endX} ${endY}`
+  }
+
   const isHorizontal = startY === from.y + from.h / 2 && endY === to.y + to.h / 2
   const isVertical = startX === from.x + from.w / 2 && endX === to.x + to.w / 2
 
