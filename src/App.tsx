@@ -6,6 +6,7 @@ import { CanvasHeader } from './components/canvas/CanvasHeader'
 import { ArchitectureCanvas } from './components/canvas/ArchitectureCanvas'
 import { NodeDetailPanel } from './components/canvas/NodeDetailPanel'
 import { TechDebtPanel } from './components/debt/TechDebtPanel'
+import { PasswordGate } from './components/auth/PasswordGate'
 import { selectedNodeAtom } from './atoms/selection'
 import { activeTabAtom } from './atoms/navigation'
 
@@ -20,22 +21,24 @@ export default function App() {
   return (
     <>
       <ThemeSync />
-      <div className="flex h-screen overflow-hidden font-sans transition-theme" style={{ backgroundColor: 'var(--bg-app)', color: 'var(--text-primary)' }}>
-        <Sidebar />
-        <main className="flex-1 relative overflow-hidden flex flex-col">
-          <CanvasHeader />
-          <div className="flex-1 relative overflow-hidden">
-            {activeTab === 'canvas' ? (
-              <>
-                <ArchitectureCanvas />
-                <NodeDetailPanel />
-              </>
-            ) : (
-              <TechDebtPanel />
-            )}
-          </div>
-        </main>
-      </div>
+      <PasswordGate>
+        <div className="flex h-screen overflow-hidden font-sans transition-theme" style={{ backgroundColor: 'var(--bg-app)', color: 'var(--text-primary)' }}>
+          <Sidebar />
+          <main className="flex-1 relative overflow-hidden flex flex-col">
+            <CanvasHeader />
+            <div className="flex-1 relative overflow-hidden">
+              {activeTab === 'canvas' ? (
+                <>
+                  <ArchitectureCanvas />
+                  <NodeDetailPanel />
+                </>
+              ) : (
+                <TechDebtPanel />
+              )}
+            </div>
+          </main>
+        </div>
+      </PasswordGate>
     </>
   )
 }
