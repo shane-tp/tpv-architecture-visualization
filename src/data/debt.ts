@@ -13,15 +13,14 @@ export const debtData: DebtItem[] = [
   {
     title: 'God-object App.cs',
     level: 'P0',
-    desc: 'Service locator anti-pattern at massive scale. 65+ static managers, 1200+ lines. Prevents isolated testing.',
+    desc: 'Service locator anti-pattern at massive scale. 66 static managers, 1,273 lines. Prevents isolated testing.',
     riskScore: 94,
     impact: 'Severe',
     effort: 'High',
     stability: 'Unstable',
     details: {
-      linesOfCode: 14821,
-      complexity: 242,
-      coupledModules: 64,
+      linesOfCode: 1273,
+      coupledModules: 66,
     },
   },
   {
@@ -36,15 +35,15 @@ export const debtData: DebtItem[] = [
   {
     title: 'PHP API Deploy',
     level: 'P1',
-    desc: '90 endpoints deployed via FTP/robocopy. Zero tests. High production risk on every deploy.',
+    desc: '~104 endpoints deployed via FTP/robocopy. Zero tests. High production risk on every deploy.',
     riskScore: 72,
     impact: 'High',
     effort: 'Medium',
     stability: 'Unstable',
     details: {
-      authProtocol: 'v1.2 (Legacy)',
-      throughput: '150 req/s',
-      latencyOverhead: '+124ms',
+      endpointFiles: '~104',
+      deployMethod: 'FTP / robocopy',
+      authMethod: 'JWT (HS512)',
     },
   },
   {
@@ -65,38 +64,28 @@ export const debtData: DebtItem[] = [
     effort: 'Low',
     stability: 'Stable',
   },
-  {
-    title: '30+ Asset Store Packages',
-    level: 'P2',
-    desc: 'Checked directly into repo with no Git LFS. Makes clones slow, inflates size.',
-    riskScore: 28,
-    impact: 'Low',
-    effort: 'Medium',
-    stability: 'Stable',
-  },
 ]
 
 export interface SystemHealthNode {
   id: string
   label: string
-  risk: number
+  files: number
+  loc: number
+  refs: number | null
   status: 'critical' | 'high' | 'moderate' | 'optimal'
 }
 
 export const systemNodes: SystemHealthNode[] = [
-  { id: 'app', label: 'APP.CS', risk: 94, status: 'critical' },
-  { id: 'net', label: 'NET_MGR', risk: 45, status: 'moderate' },
-  { id: 'physics', label: 'PHYSICS', risk: 8, status: 'optimal' },
-  { id: 'api', label: 'PHP_API', risk: 72, status: 'high' },
-  { id: 'events', label: 'EVENTS', risk: 22, status: 'optimal' },
-  { id: 'workout', label: 'WORKOUT', risk: 78, status: 'high' },
-  { id: 'pairing', label: 'PAIRING', risk: 35, status: 'moderate' },
-  { id: 'ui', label: 'UI_LAYER', risk: 55, status: 'moderate' },
-  { id: 'bots', label: 'BOT_AI', risk: 12, status: 'optimal' },
-  { id: 'audio', label: 'AUDIO', risk: 5, status: 'optimal' },
-  { id: 'avatar', label: 'AVATAR', risk: 18, status: 'optimal' },
-  { id: 'sql', label: 'SQL_DB', risk: 40, status: 'moderate' },
+  { id: 'app',     label: 'APP.CS',    files: 2,   loc: 1781,  refs: 272,  status: 'critical' },
+  { id: 'sql',     label: 'SQL_DB',    files: 209, loc: 13317, refs: 79,   status: 'high' },
+  { id: 'api',     label: 'PHP_API',   files: 115, loc: 10485, refs: null,  status: 'high' },
+  { id: 'bots',    label: 'BOT_AI',    files: 10,  loc: 3501,  refs: 36,   status: 'moderate' },
+  { id: 'events',  label: 'EVENTS',    files: 77,  loc: 16606, refs: 34,   status: 'moderate' },
+  { id: 'avatar',  label: 'AVATAR',    files: 56,  loc: 2917,  refs: 34,   status: 'moderate' },
+  { id: 'ui',      label: 'UI_LAYER',  files: 291, loc: 40632, refs: 20,   status: 'moderate' },
+  { id: 'audio',   label: 'AUDIO',     files: 2,   loc: 410,   refs: 18,   status: 'moderate' },
+  { id: 'workout', label: 'WORKOUT',   files: 33,  loc: 7018,  refs: 13,   status: 'optimal' },
+  { id: 'net',     label: 'NET_MGR',   files: 81,  loc: 24540, refs: 6,    status: 'optimal' },
+  { id: 'pairing', label: 'PAIRING',   files: 60,  loc: 14928, refs: 4,    status: 'optimal' },
+  { id: 'physics', label: 'PHYSICS',   files: 2,   loc: 2124,  refs: 4,    status: 'optimal' },
 ]
-
-export const aggregatedRiskScore = 8.4
-export const coverageGap = 31.4

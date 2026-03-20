@@ -31,14 +31,14 @@ export function getIndicatorColor(color: AccentColor): string {
 }
 
 const iconTints: Record<AccentColor, string> = {
-  cyan:    'bg-cyan-400/10 text-cyan-400',
-  blue:    'bg-blue-400/10 text-blue-400',
-  emerald: 'bg-emerald-400/10 text-emerald-400',
-  purple:  'bg-purple-400/10 text-purple-400',
-  rose:    'bg-rose-400/10 text-rose-400',
-  orange:  'bg-orange-400/10 text-orange-400',
-  indigo:  'bg-indigo-400/10 text-indigo-400',
-  amber:   'bg-amber-400/10 text-amber-400',
+  cyan:    'bg-cyan-400/15 text-cyan-400',
+  blue:    'bg-blue-400/15 text-blue-400',
+  emerald: 'bg-emerald-400/15 text-emerald-400',
+  purple:  'bg-purple-400/15 text-purple-400',
+  rose:    'bg-rose-400/15 text-rose-400',
+  orange:  'bg-orange-400/15 text-orange-400',
+  indigo:  'bg-indigo-400/15 text-indigo-400',
+  amber:   'bg-amber-400/15 text-amber-400',
 }
 
 export function getIconTintClass(color: AccentColor): string {
@@ -61,14 +61,14 @@ export function getGroupBorderClass(color: AccentColor): string {
 }
 
 const groupBgs: Record<AccentColor, string> = {
-  cyan:    'bg-cyan-500/[0.02] dark:bg-cyan-400/[0.04]',
-  blue:    'bg-blue-500/[0.02] dark:bg-blue-400/[0.04]',
-  emerald: 'bg-emerald-500/[0.02] dark:bg-emerald-400/[0.04]',
-  purple:  'bg-purple-500/[0.02] dark:bg-purple-400/[0.04]',
-  rose:    'bg-rose-500/[0.02] dark:bg-rose-400/[0.04]',
-  orange:  'bg-orange-500/[0.02] dark:bg-orange-400/[0.04]',
-  indigo:  'bg-indigo-500/[0.02] dark:bg-indigo-400/[0.04]',
-  amber:   'bg-amber-500/[0.02] dark:bg-amber-400/[0.04]',
+  cyan:    'bg-cyan-500/[0.04] dark:bg-cyan-400/[0.07]',
+  blue:    'bg-blue-500/[0.04] dark:bg-blue-400/[0.07]',
+  emerald: 'bg-emerald-500/[0.04] dark:bg-emerald-400/[0.07]',
+  purple:  'bg-purple-500/[0.04] dark:bg-purple-400/[0.07]',
+  rose:    'bg-rose-500/[0.04] dark:bg-rose-400/[0.07]',
+  orange:  'bg-orange-500/[0.04] dark:bg-orange-400/[0.07]',
+  indigo:  'bg-indigo-500/[0.04] dark:bg-indigo-400/[0.07]',
+  amber:   'bg-amber-500/[0.04] dark:bg-amber-400/[0.07]',
 }
 
 export function getGroupBgClass(color: AccentColor): string {

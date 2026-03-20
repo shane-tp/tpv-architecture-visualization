@@ -9,8 +9,8 @@
     --surface-card: rgba(255, 255, 255, 0.7);
     --surface-card-hover: rgba(255, 255, 255, 0.85);
 
-    --border-subtle: rgba(0, 106, 113, 0.1);
-    --border-strong: rgba(0, 106, 113, 0.2);
+    --border-subtle: rgba(0, 106, 113, 0.08);
+    --border-strong: rgba(0, 106, 113, 0.15);
 
     --text-primary: #0c0e12;
     --text-secondary: #44474b;
@@ -50,8 +50,8 @@
     --surface-card: rgba(23, 26, 30, 0.6);
     --surface-card-hover: rgba(40, 44, 50, 0.7);
 
-    --border-subtle: rgba(70, 72, 76, 0.3);
-    --border-strong: rgba(115, 117, 122, 0.3);
+    --border-subtle: rgba(70, 72, 76, 0.15);
+    --border-strong: rgba(115, 117, 122, 0.15);
 
     --text-primary: #f8f9fe;
     --text-secondary: #a9abb0;
@@ -108,7 +108,7 @@
     background: var(--surface-glass);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--surface-glass-border);
+    box-shadow: inset 0 0 0 1px var(--surface-glass-border);
   }
 
   .font-headline {

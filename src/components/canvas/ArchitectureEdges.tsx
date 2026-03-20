@@ -1,75 +1,116 @@
+import { useAtomValue } from 'jotai'
 import { archEdges, archNodes, CANVAS_W, CANVAS_H } from '../../data/architecture'
-import { getAnchors } from '../../lib/architecture/geometry'
+import { getAnchors, buildPath } from '../../lib/architecture/geometry'
+import { selectedNodeAtom } from '../../atoms/selection'
+import { nodePositionsAtom } from '../../atoms/nodePositions'
+import type { ArchNode } from '../../types/architecture'
 
 interface ArchitectureEdgesProps {
   focusGroup: string | null
 }
 
 export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
+  const selectedNodeId = useAtomValue(selectedNodeAtom)
+  const positions = useAtomValue(nodePositionsAtom)
+
+  const highlightedGroups = new Set<string>()
+  if (selectedNodeId) {
+    const selectedNode = archNodes.find((n) => n.id === selectedNodeId)
+    if (selectedNode) highlightedGroups.add(selectedNode.group)
+    for (const e of archEdges) {
+      if (e.from === selectedNodeId || e.to === selectedNodeId) {
+        const peer = archNodes.find((n) => n.id === (e.from === selectedNodeId ? e.to : e.from))
+        if (peer) highlightedGroups.add(peer.group)
+      }
+    }
+  }
+
+  function withLivePos(node: ArchNode): ArchNode {
+    const pos = positions[node.id]
+    if (!pos) return node
+    return { ...node, x: pos.x, y: pos.y }
+  }
+
   return (
     <svg
-      className="absolute inset-0 overflow-visible pointer-events-none z-0"
+      className="absolute inset-0 overflow-visible pointer-events-none z-20"
       style={{ width: CANVAS_W, height: CANVAS_H }}
     >
       <defs>
-        <marker
-          id="arrow"
-          viewBox="0 0 10 10"
-          refX="8"
-          refY="5"
-          markerWidth="4"
-          markerHeight="4"
-          orient="auto-start-reverse"
-        >
-          <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--arrow-fill)" />
-        </marker>
         <filter id="glow-edge" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+        <marker
+          id="arrow-cyan"
+          viewBox="0 0 10 10"
+          refX="10"
+          refY="5"
+          markerWidth="8"
+          markerHeight="8"
+          orient="auto"
+        >
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#00F0FF" />
+        </marker>
+        <marker
+          id="arrow-lime"
+          viewBox="0 0 10 10"
+          refX="10"
+          refY="5"
+          markerWidth="8"
+          markerHeight="8"
+          orient="auto"
+        >
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#8eff71" />
+        </marker>
+        <marker
+          id="arrow-magenta"
+          viewBox="0 0 10 10"
+          refX="10"
+          refY="5"
+          markerWidth="8"
+          markerHeight="8"
+          orient="auto"
+        >
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ff51fa" />
+        </marker>
       </defs>
 
       {archEdges.map((edge) => {
-        const from = archNodes.find((n) => n.id === edge.from)
-        const to = archNodes.find((n) => n.id === edge.to)
-        if (!from || !to) return null
+        const fromStatic = archNodes.find((n) => n.id === edge.from)
+        const toStatic = archNodes.find((n) => n.id === edge.to)
+        if (!fromStatic || !toStatic) return null
+
+        const from = withLivePos(fromStatic)
+        const to = withLivePos(toStatic)
 
         let opacity = 1
         if (focusGroup) {
-          if (from.group !== focusGroup && to.group !== focusGroup) opacity = 0.05
+          const intraFsm = fromStatic.group === 'fsm' && toStatic.group === 'fsm'
+          if (!intraFsm && fromStatic.group !== focusGroup && toStatic.group !== focusGroup) {
+            opacity = 0.05
+          }
+        }
+        if (selectedNodeId && opacity > 0.05) {
+          const isConnected = edge.from === selectedNodeId || edge.to === selectedNodeId
+          const bothInHighlighted = highlightedGroups.has(fromStatic.group) && highlightedGroups.has(toStatic.group)
+          const bothFsm = fromStatic.group === 'fsm' && toStatic.group === 'fsm'
+          if (!isConnected && !bothInHighlighted && !bothFsm) opacity = Math.min(opacity, 0.2)
         }
 
-        const { startX, startY, endX, endY } = getAnchors(from, to)
-        const offset = Math.max(
-          Math.abs(startX - endX) / 1.5,
-          Math.abs(startY - endY) / 1.5,
-          80,
-        )
+        const anchors = getAnchors(from, to)
+        const pathData = buildPath(from, to, anchors)
+        const strokeColor = edge.color ?? '#00F0FF'
+        const strokeWidth = edge.strokeW ?? '1.5'
+        const markerId = strokeColor === '#8eff71' ? 'arrow-lime'
+          : strokeColor === '#ff51fa' ? 'arrow-magenta'
+          : 'arrow-cyan'
 
-        let cp1x = startX
-        let cp1y = startY
-        let cp2x = endX
-        let cp2y = endY
-
-        if (startX === from.x || startX === from.x + from.w) {
-          cp1x += startX === from.x ? -offset : offset
-        } else {
-          cp1y += startY === from.y ? -offset : offset
-        }
-
-        if (endX === to.x || endX === to.x + to.w) {
-          cp2x += endX === to.x ? -offset : offset
-        } else {
-          cp2y += endY === to.y ? -offset : offset
-        }
-
-        const pathData = `M ${startX} ${startY} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${endX} ${endY}`
-        const strokeColor = edge.color ?? '#4B5563'
-        const strokeWidth = edge.strokeW ?? '2'
-        const useGlow = edge.animate || edge.dashed
+        const labelX = (anchors.startX + anchors.endX) / 2
+        const labelY = (anchors.startY + anchors.endY) / 2 - 10
 
         return (
           <g key={edge.id} style={{ opacity, transition: 'opacity 0.3s ease' }}>
@@ -79,12 +120,13 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
               stroke={strokeColor}
               strokeWidth={strokeWidth}
               strokeDasharray={edge.dashed ? '6,4' : 'none'}
-              markerEnd="url(#arrow)"
               strokeLinecap="round"
-              filter={useGlow && opacity > 0.5 ? 'url(#glow-edge)' : undefined}
+              strokeLinejoin="round"
+              filter={opacity > 0.5 ? 'url(#glow-edge)' : undefined}
+              markerEnd={`url(#${markerId})`}
             />
             {edge.animate && opacity > 0.5 && (
-              <circle r="3.5" fill={strokeColor} opacity={0.9}>
+              <circle r="3" fill={strokeColor} opacity={0.9}>
                 <animateMotion
                   dur="3s"
                   repeatCount="indefinite"
@@ -96,15 +138,26 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
               </circle>
             )}
             {edge.label && (
-              <text
-                x={(startX + endX) / 2}
-                y={(startY + endY) / 2 - 8}
-                fill={edge.textCol ?? 'var(--edge-label-fill)'}
-                className="text-[10px] font-display font-semibold pointer-events-none"
-                textAnchor="middle"
-              >
-                {edge.label}
-              </text>
+              <>
+                <rect
+                  x={labelX - edge.label.length * 3.2 - 4}
+                  y={labelY - 9}
+                  width={edge.label.length * 6.4 + 8}
+                  height={16}
+                  rx={4}
+                  fill="var(--canvas-bg)"
+                  fillOpacity={0.85}
+                />
+                <text
+                  x={labelX}
+                  y={labelY + 2}
+                  fill={edge.textCol ?? 'var(--edge-label-fill)'}
+                  className="text-[11px] font-display font-semibold pointer-events-none"
+                  textAnchor="middle"
+                >
+                  {edge.label}
+                </text>
+              </>
             )}
           </g>
         )
