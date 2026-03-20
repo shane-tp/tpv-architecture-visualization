@@ -8,8 +8,7 @@ import { ArchitectureNodes } from './ArchitectureNodes'
 import { selectedNodeAtom } from '../../atoms/selection'
 import { focusGroupAtom } from '../../atoms/navigation'
 import { canvasTransformAtom, isDraggingAtom, INITIAL_TRANSFORM } from '../../atoms/canvas'
-import { draggingNodeAtom } from '../../atoms/nodePositions'
-import { resetNodePositionsAtom } from '../../atoms/nodePositions'
+import { draggingNodeAtom, draggingGroupAtom, resetNodePositionsAtom } from '../../atoms/nodePositions'
 
 const PAN_THRESHOLD = 4
 
@@ -25,6 +24,7 @@ export function ArchitectureCanvas() {
   const focusGroup = useAtomValue(focusGroupAtom)
   const clearSelection = useSetAtom(selectedNodeAtom)
   const draggingNode = useAtomValue(draggingNodeAtom)
+  const draggingGroup = useAtomValue(draggingGroupAtom)
   const resetLayout = useSetAtom(resetNodePositionsAtom)
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
@@ -37,15 +37,15 @@ export function ArchitectureCanvas() {
   }, [setTransform])
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (draggingNode) return
+    if (draggingNode || draggingGroup) return
     isPointerDown.current = true
     dragStartRef.current = { x: e.clientX - transform.x, y: e.clientY - transform.y }
     mouseDownPosRef.current = { x: e.clientX, y: e.clientY }
     didDragRef.current = false
-  }, [transform.x, transform.y, draggingNode])
+  }, [transform.x, transform.y, draggingNode, draggingGroup])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isPointerDown.current || draggingNode) return
+    if (!isPointerDown.current || draggingNode || draggingGroup) return
     const dx = e.clientX - mouseDownPosRef.current.x
     const dy = e.clientY - mouseDownPosRef.current.y
     const distance = Math.sqrt(dx * dx + dy * dy)
@@ -62,15 +62,15 @@ export function ArchitectureCanvas() {
         y: e.clientY - dragStartRef.current.y,
       }))
     }
-  }, [isDragging, setIsDragging, setTransform, draggingNode])
+  }, [isDragging, setIsDragging, setTransform, draggingNode, draggingGroup])
 
   const handleMouseUp = useCallback(() => {
     isPointerDown.current = false
-    if (!didDragRef.current && !draggingNode) {
+    if (!didDragRef.current && !draggingNode && !draggingGroup) {
       clearSelection(null)
     }
     setIsDragging(false)
-  }, [clearSelection, setIsDragging, draggingNode])
+  }, [clearSelection, setIsDragging, draggingNode, draggingGroup])
 
   const handleMouseLeave = useCallback(() => {
     isPointerDown.current = false
@@ -107,7 +107,7 @@ export function ArchitectureCanvas() {
         style={{
           transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
           transformOrigin: '0 0',
-          transition: isDragging || draggingNode ? 'none' : 'transform 75ms ease-out',
+          transition: isDragging || draggingNode || draggingGroup ? 'none' : 'transform 75ms ease-out',
         }}
       >
         <ArchitectureGroups focusGroup={focusGroup} />

@@ -5,19 +5,19 @@ import {
 } from 'lucide-react'
 import type { ArchGroup, ArchNode, ArchEdge } from '../types/architecture'
 
-export const NODE_W = 320
-export const NODE_H = 140
+export const NODE_W = 350
+export const NODE_H = 155
 export const CANVAS_W = 5500
 export const CANVAS_H = 3200
 
-const FSM_W = 260
-const FSM_H = 110
-const MID_W = 280
-const MID_H = 130
-const HERO_W = 400
-const HERO_H = 200
-const BIG_W = 420
-const BIG_H = 180
+const FSM_W = 290
+const FSM_H = 125
+const MID_W = 310
+const MID_H = 145
+const HERO_W = 440
+const HERO_H = 220
+const BIG_W = 460
+const BIG_H = 195
 
 // ═══════════════════════════════════════════════════════════════
 // THREE-BAND LAYOUT
