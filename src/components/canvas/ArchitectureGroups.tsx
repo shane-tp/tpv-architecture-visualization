@@ -3,7 +3,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { GripVertical } from 'lucide-react'
 import { archGroups } from '../../data/architecture'
 import { getGroupBgClass, getGroupTextClass } from '../../lib/architecture/colors'
-import { groupPositionsAtom, draggingGroupAtom, moveGroupAtom } from '../../atoms/nodePositions'
+import { groupPositionsAtom, draggingGroupAtom, draggingNodeAtom, moveGroupAtom } from '../../atoms/nodePositions'
 import { canvasTransformAtom } from '../../atoms/canvas'
 import type { AccentColor } from '../../types/architecture'
 
@@ -30,6 +30,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
   const setDraggingGroup = useSetAtom(draggingGroupAtom)
   const moveGroup = useSetAtom(moveGroupAtom)
   const transform = useAtomValue(canvasTransformAtom)
+  const anyDragActive = !!(useAtomValue(draggingGroupAtom) || useAtomValue(draggingNodeAtom))
 
   const dragStateRef = useRef<{
     groupId: string
@@ -95,7 +96,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
         return (
           <div
             key={group.id}
-            className={`absolute rounded-2xl transition-opacity duration-300 ${bgClass}`}
+            className={`absolute rounded-2xl ${bgClass}`}
             style={{
               left: pos.x,
               top: pos.y,
@@ -103,6 +104,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
               height: group.h,
               opacity: isFaded ? 0.05 : 1,
               boxShadow: ghostBorderByColor[group.color],
+              transition: anyDragActive ? 'none' : 'opacity 0.3s ease',
             }}
             onMouseDown={(e) => startGroupDrag(group.id, e, BODY_DRAG_THRESHOLD)}
           >
