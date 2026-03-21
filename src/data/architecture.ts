@@ -5,19 +5,19 @@ import {
 } from 'lucide-react'
 import type { ArchGroup, ArchNode, ArchEdge } from '../types/architecture'
 
-export const NODE_W = 350
-export const NODE_H = 155
-export const CANVAS_W = 5500
-export const CANVAS_H = 3200
+export const NODE_W = 420
+export const NODE_H = 185
+export const CANVAS_W = 6200
+export const CANVAS_H = 3800
 
-const FSM_W = 290
-const FSM_H = 125
-const MID_W = 310
-const MID_H = 145
-const HERO_W = 440
-const HERO_H = 220
-const BIG_W = 460
-const BIG_H = 195
+const FSM_W = 350
+const FSM_H = 150
+const MID_W = 370
+const MID_H = 175
+const HERO_W = 530
+const HERO_H = 265
+const BIG_W = 550
+const BIG_H = 235
 
 // ═══════════════════════════════════════════════════════════════
 // THREE-BAND LAYOUT
@@ -29,19 +29,19 @@ const BIG_H = 195
 
 export const archGroups: ArchGroup[] = [
   // Band 1 — FSM
-  { id: 'fsm',          label: 'GAME STATE MACHINE',      x: 60,   y: 60,   w: 5400, h: 1200, color: 'cyan' },
+  { id: 'fsm',          label: 'GAME STATE MACHINE',      x: 40,   y: 40,   w: 5600, h: 1300, color: 'cyan' },
 
   // Band 2 — Core runtime (4 groups, evenly spread full width)
-  { id: 'client',       label: 'CLIENT APPLICATION',      x: 60,   y: 1440, w: 1200, h: 780,  color: 'blue' },
-  { id: 'systems',      label: 'GAME SYSTEMS',            x: 1440, y: 1440, w: 1200, h: 780,  color: 'purple' },
-  { id: 'net',          label: 'NETWORKING',               x: 2820, y: 1440, w: 600,  h: 440,  color: 'emerald' },
-  { id: 'server',       label: 'SERVER (Headless Unity)',  x: 3600, y: 1440, w: 1200, h: 780,  color: 'orange' },
+  { id: 'client',       label: 'CLIENT APPLICATION',      x: 40,   y: 1520, w: 1350, h: 880,  color: 'blue' },
+  { id: 'systems',      label: 'GAME SYSTEMS',            x: 1440, y: 1520, w: 1350, h: 880,  color: 'purple' },
+  { id: 'net',          label: 'NETWORKING',               x: 2860, y: 1520, w: 680,  h: 480,  color: 'emerald' },
+  { id: 'server',       label: 'SERVER (Headless Unity)',  x: 3600, y: 1520, w: 1400, h: 880,  color: 'orange' },
 
   // Band 3 — External/supporting (4 groups, evenly spread full width)
-  { id: 'services',     label: 'EXTERNAL SERVICES',        x: 60,   y: 2420, w: 1200, h: 620,  color: 'rose' },
-  { id: 'fit',          label: 'FILE EXPORT',              x: 1440, y: 2420, w: 600,  h: 400,  color: 'indigo' },
-  { id: 'tphub',        label: 'TP HUB MOBILE',            x: 2220, y: 2420, w: 600,  h: 400,  color: 'amber' },
-  { id: 'integrations', label: 'INTEGRATIONS',             x: 3000, y: 2420, w: 1200, h: 620,  color: 'amber' },
+  { id: 'services',     label: 'EXTERNAL SERVICES',        x: 40,   y: 2600, w: 1350, h: 720,  color: 'rose' },
+  { id: 'fit',          label: 'FILE EXPORT',              x: 1440, y: 2600, w: 680,  h: 440,  color: 'indigo' },
+  { id: 'tphub',        label: 'TP HUB MOBILE',            x: 2200, y: 2600, w: 680,  h: 440,  color: 'amber' },
+  { id: 'integrations', label: 'INTEGRATIONS',             x: 2960, y: 2600, w: 1340, h: 720,  color: 'amber' },
 ]
 
 export const archNodes: ArchNode[] = [
@@ -78,47 +78,47 @@ export const archNodes: ArchNode[] = [
   // ═══════════════════════════════════════════════════════════════
 
   // Client Application
-  { id: 'stateMgr',  group: 'client',  label: 'StateManager',      desc: '14-State Enum FSM',                x: 120,  y: 1540, w: BIG_W,  h: BIG_H,  icon: Activity, color: 'blue', status: 'ACTIVE', metric: { label: 'STATES', value: 14 } },
-  { id: 'app',       group: 'client',  label: 'App.cs',            desc: 'God Object — 1200+ LOC, 65 Mgrs',  x: 640,  y: 1530, w: BIG_W,  h: BIG_H,  icon: Code,    color: 'blue', status: 'DEBT_LCL' },
-  { id: 'gui',       group: 'client',  label: 'UI Layer',          desc: '100+ MenuTypes, uGUI + TMPro',     x: 120,  y: 1820, w: NODE_W, h: NODE_H, icon: Layout,   color: 'blue', status: 'STABLE' },
-  { id: 'netServ',   group: 'client',  label: 'NetServManager',    desc: 'TCP:7779, mDNS companion link',    x: 560,  y: 1830, w: MID_W,  h: MID_H,  icon: Radio,   color: 'blue', status: 'ACTIVE' },
+  { id: 'stateMgr',  group: 'client',  label: 'StateManager',      desc: '14-State Enum FSM',                x: 100,  y: 1620, w: BIG_W,  h: BIG_H,  icon: Activity, color: 'blue', status: 'ACTIVE', metric: { label: 'STATES', value: 14 } },
+  { id: 'app',       group: 'client',  label: 'App.cs',            desc: 'God Object — 1200+ LOC, 65 Mgrs',  x: 700,  y: 1610, w: BIG_W,  h: BIG_H,  icon: Code,    color: 'blue', status: 'DEBT_LCL' },
+  { id: 'gui',       group: 'client',  label: 'UI Layer',          desc: '100+ MenuTypes, uGUI + TMPro',     x: 100,  y: 1920, w: NODE_W, h: NODE_H, icon: Layout,   color: 'blue', status: 'STABLE' },
+  { id: 'netServ',   group: 'client',  label: 'NetServManager',    desc: 'TCP:7779, mDNS companion link',    x: 580,  y: 1930, w: MID_W,  h: MID_H,  icon: Radio,   color: 'blue', status: 'ACTIVE' },
 
   // Game Systems
-  { id: 'parts',     group: 'systems', label: 'Modular Avatar',    desc: 'Body, Kit, Bike frames',           x: 1500, y: 1540, w: NODE_W, h: NODE_H, icon: User,     color: 'purple', status: 'STABLE' },
-  { id: 'bots',      group: 'systems', label: 'Bot AI',            desc: 'Client ambient + Server pace',     x: 1940, y: 1550, w: NODE_W, h: NODE_H, icon: Bot,      color: 'purple', status: 'ACTIVE' },
-  { id: 'pairing',   group: 'systems', label: 'Hardware Pairing',  desc: 'ANT+, BLE, FTMS',                  x: 1500, y: 1800, w: HERO_W, h: HERO_H, icon: Bluetooth, color: 'purple', status: 'LEGACY' },
-  { id: 'zwo',       group: 'systems', label: 'Workout Engine',    desc: 'ZWO/MRC/JSON, ERG Mode',           x: 1980, y: 1800, w: HERO_W, h: HERO_H, icon: FileJson, color: 'purple', status: 'STABLE' },
+  { id: 'parts',     group: 'systems', label: 'Modular Avatar',    desc: 'Body, Kit, Bike frames',           x: 1500, y: 1620, w: NODE_W, h: NODE_H, icon: User,     color: 'purple', status: 'STABLE' },
+  { id: 'bots',      group: 'systems', label: 'Bot AI',            desc: 'Client ambient + Server pace',     x: 1980, y: 1630, w: NODE_W, h: NODE_H, icon: Bot,      color: 'purple', status: 'ACTIVE' },
+  { id: 'pairing',   group: 'systems', label: 'Hardware Pairing',  desc: 'ANT+, BLE, FTMS',                  x: 1500, y: 1880, w: HERO_W, h: HERO_H, icon: Bluetooth, color: 'purple', status: 'LEGACY' },
+  { id: 'zwo',       group: 'systems', label: 'Workout Engine',    desc: 'ZWO/MRC/JSON, ERG Mode',           x: 2080, y: 1880, w: HERO_W, h: HERO_H, icon: FileJson, color: 'purple', status: 'STABLE' },
 
   // Networking
-  { id: 'tcp',       group: 'net',     label: 'Riptide Network',   desc: 'TCP+UDP Dual Transport, 20Hz',     x: 2880, y: 1540, w: BIG_W,  h: BIG_H,  icon: Wifi,    color: 'emerald', status: 'ACTIVE', metric: { label: 'TICK', value: 20, unit: 'Hz' } },
+  { id: 'tcp',       group: 'net',     label: 'Riptide Network',   desc: 'TCP+UDP Dual Transport, 20Hz',     x: 2920, y: 1620, w: BIG_W,  h: BIG_H,  icon: Wifi,    color: 'emerald', status: 'ACTIVE', metric: { label: 'TICK', value: 20, unit: 'Hz' } },
 
   // Server (Headless Unity)
-  { id: 'headless',  group: 'server',  label: 'Headless Unity',    desc: 'Game Server Instance',             x: 3660, y: 1540, w: BIG_W,  h: BIG_H,  icon: Server,  color: 'orange', status: 'ACTIVE' },
-  { id: 'physics',   group: 'server',  label: 'PhysicsManager',    desc: 'CdA, Draft (55% max), Server-Auth', x: 4180, y: 1550, w: HERO_W, h: HERO_H, icon: Zap,     color: 'orange', status: 'STABLE' },
-  { id: 'races',     group: 'server',  label: 'EventManager',      desc: '10+ Race Types, Rankings',         x: 3660, y: 1840, w: HERO_W, h: HERO_H, icon: Flag,    color: 'orange', status: 'PEAK' },
-  { id: 'pacebots',  group: 'server',  label: 'PaceBots',          desc: 'Server-side AI, per-event',        x: 4120, y: 1840, w: NODE_W, h: NODE_H, icon: Bot,     color: 'orange', status: 'STABLE' },
+  { id: 'headless',  group: 'server',  label: 'Headless Unity',    desc: 'Game Server Instance',             x: 3660, y: 1620, w: BIG_W,  h: BIG_H,  icon: Server,  color: 'orange', status: 'ACTIVE' },
+  { id: 'physics',   group: 'server',  label: 'PhysicsManager',    desc: 'CdA, Draft (55% max), Server-Auth', x: 4280, y: 1620, w: HERO_W, h: HERO_H, icon: Zap,     color: 'orange', status: 'STABLE' },
+  { id: 'races',     group: 'server',  label: 'EventManager',      desc: '10+ Race Types, Rankings',         x: 3660, y: 1920, w: HERO_W, h: HERO_H, icon: Flag,    color: 'orange', status: 'PEAK' },
+  { id: 'pacebots',  group: 'server',  label: 'PaceBots',          desc: 'Server-side AI, per-event',        x: 4250, y: 1920, w: NODE_W, h: NODE_H, icon: Bot,     color: 'orange', status: 'STABLE' },
 
   // ═══════════════════════════════════════════════════════════════
   // BAND 3 — External / Supporting
   // ═══════════════════════════════════════════════════════════════
 
   // External Services
-  { id: 'api',       group: 'services',     label: 'PHP API',      desc: '~90 endpoints, IIS/Azure',         x: 120,  y: 2520, w: HERO_W, h: HERO_H, icon: Globe,   color: 'rose', status: 'LEGACY' },
-  { id: 'cdn',       group: 'services',     label: 'Azure CDN',    desc: 'Kits, i18n, Routes',               x: 620,  y: 2540, w: NODE_W, h: NODE_H, icon: Cloud,   color: 'rose', status: 'STABLE' },
-  { id: 'sql',       group: 'services',     label: 'SQL Server',   desc: 'T-SQL / dbo schema',               x: 120,  y: 2770, w: HERO_W, h: HERO_H, icon: Database, color: 'rose', status: 'ACTIVE' },
-  { id: 'snowflake', group: 'services',     label: 'Snowflake DB', desc: 'Performance / Usage Metrics',      x: 620,  y: 2790, w: NODE_W, h: NODE_H, icon: Database, color: 'rose', status: 'ACTIVE' },
+  { id: 'api',       group: 'services',     label: 'PHP API',      desc: '~90 endpoints, IIS/Azure',         x: 100,  y: 2700, w: HERO_W, h: HERO_H, icon: Globe,   color: 'rose', status: 'LEGACY' },
+  { id: 'cdn',       group: 'services',     label: 'Azure CDN',    desc: 'Kits, i18n, Routes',               x: 700,  y: 2720, w: NODE_W, h: NODE_H, icon: Cloud,   color: 'rose', status: 'STABLE' },
+  { id: 'sql',       group: 'services',     label: 'SQL Server',   desc: 'T-SQL / dbo schema',               x: 100,  y: 3010, w: HERO_W, h: HERO_H, icon: Database, color: 'rose', status: 'ACTIVE' },
+  { id: 'snowflake', group: 'services',     label: 'Snowflake DB', desc: 'Performance / Usage Metrics',      x: 700,  y: 3030, w: NODE_W, h: NODE_H, icon: Database, color: 'rose', status: 'ACTIVE' },
 
   // File Export
-  { id: 'fitservice', group: 'fit',    label: 'FITFileService',    desc: 'Dynastream SDK, Dev Fields',       x: 1500, y: 2520, w: HERO_W, h: HERO_H, icon: File,    color: 'indigo', status: 'ACTIVE' },
+  { id: 'fitservice', group: 'fit',    label: 'FITFileService',    desc: 'Dynastream SDK, Dev Fields',       x: 1500, y: 2700, w: HERO_W, h: HERO_H, icon: File,    color: 'indigo', status: 'ACTIVE' },
 
   // TP Hub Mobile
-  { id: 'tpHub',     group: 'tphub',   label: 'TP Hub Mobile',     desc: 'React Native — mDNS, TCP:7779',   x: 2280, y: 2520, w: HERO_W, h: HERO_H, icon: Smartphone, color: 'amber', status: 'ACTIVE' },
+  { id: 'tpHub',     group: 'tphub',   label: 'TP Hub Mobile',     desc: 'React Native — mDNS, TCP:7779',   x: 2260, y: 2700, w: HERO_W, h: HERO_H, icon: Smartphone, color: 'amber', status: 'ACTIVE' },
 
   // Integrations
-  { id: 'tp',        group: 'integrations', label: 'TrainingPeaks',  desc: 'Workout Sync, TP API',           x: 3060, y: 2520, w: NODE_W, h: NODE_H, icon: Calendar,       color: 'amber', status: 'STABLE' },
-  { id: 'strava',    group: 'integrations', label: 'Strava',         desc: 'OAuth / Activity Upload',        x: 3500, y: 2540, w: NODE_W, h: NODE_H, icon: Activity,       color: 'amber', status: 'ACTIVE' },
-  { id: 'intervals', group: 'integrations', label: 'Intervals.icu',  desc: 'Workout Sync',                   x: 3060, y: 2780, w: NODE_W, h: NODE_H, icon: BarChart,       color: 'amber', status: 'STABLE' },
-  { id: 'discord',   group: 'integrations', label: 'Discord',        desc: 'Rich Presence SDK',              x: 3500, y: 2800, w: NODE_W, h: NODE_H, icon: MessageCircle,  color: 'amber', status: 'ACTIVE' },
+  { id: 'tp',        group: 'integrations', label: 'TrainingPeaks',  desc: 'Workout Sync, TP API',           x: 3020, y: 2700, w: NODE_W, h: NODE_H, icon: Calendar,       color: 'amber', status: 'STABLE' },
+  { id: 'strava',    group: 'integrations', label: 'Strava',         desc: 'OAuth / Activity Upload',        x: 3520, y: 2720, w: NODE_W, h: NODE_H, icon: Activity,       color: 'amber', status: 'ACTIVE' },
+  { id: 'intervals', group: 'integrations', label: 'Intervals.icu',  desc: 'Workout Sync',                   x: 3020, y: 2960, w: NODE_W, h: NODE_H, icon: BarChart,       color: 'amber', status: 'STABLE' },
+  { id: 'discord',   group: 'integrations', label: 'Discord',        desc: 'Rich Presence SDK',              x: 3520, y: 2980, w: NODE_W, h: NODE_H, icon: MessageCircle,  color: 'amber', status: 'ACTIVE' },
 ]
 
 export const archEdges: ArchEdge[] = [

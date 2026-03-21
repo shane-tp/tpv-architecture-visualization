@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { archEdges, archNodes, CANVAS_W, CANVAS_H } from '../../data/architecture'
 import { getAnchors, buildPath } from '../../lib/architecture/geometry'
 import { selectedNodeAtom } from '../../atoms/selection'
-import { nodePositionsAtom, draggingNodeAtom, draggingGroupAtom } from '../../atoms/nodePositions'
+import { nodePositionsAtom } from '../../atoms/nodePositions'
 import type { ArchNode } from '../../types/architecture'
 
 interface ArchitectureEdgesProps {
@@ -12,7 +12,6 @@ interface ArchitectureEdgesProps {
 export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
   const selectedNodeId = useAtomValue(selectedNodeAtom)
   const positions = useAtomValue(nodePositionsAtom)
-  const anyDragActive = !!(useAtomValue(draggingNodeAtom) || useAtomValue(draggingGroupAtom))
 
   const highlightedGroups = new Set<string>()
   if (selectedNodeId) {
@@ -114,7 +113,7 @@ export function ArchitectureEdges({ focusGroup }: ArchitectureEdgesProps) {
         const labelY = (anchors.startY + anchors.endY) / 2 - 10
 
         return (
-          <g key={edge.id} style={{ opacity, transition: anyDragActive ? 'none' : 'opacity 0.3s ease' }}>
+          <g key={edge.id} style={{ opacity, transition: 'opacity 0.3s ease' }}>
             <path
               d={pathData}
               fill="none"
