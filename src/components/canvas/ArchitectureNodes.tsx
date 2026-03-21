@@ -3,7 +3,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { archNodes } from '../../data/architecture'
 import { nodeDetails } from '../../data/nodeDetails'
 import { selectedNodeAtom, hoveredNodeAtom } from '../../atoms/selection'
-import { nodePositionsAtom, draggingNodeAtom } from '../../atoms/nodePositions'
+import { nodePositionsAtom, draggingNodeAtom, draggingGroupAtom } from '../../atoms/nodePositions'
 import { canvasTransformAtom } from '../../atoms/canvas'
 import { getIndicatorColor, getIconTintClass } from '../../lib/architecture/colors'
 import type { AccentColor, NodeStatus } from '../../types/architecture'
@@ -73,6 +73,9 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
   const positions = useAtomValue(nodePositionsAtom)
   const setPositions = useSetAtom(nodePositionsAtom)
   const setDraggingNode = useSetAtom(draggingNodeAtom)
+  const draggingNode = useAtomValue(draggingNodeAtom)
+  const draggingGroup = useAtomValue(draggingGroupAtom)
+  const anyDragActive = !!(draggingNode || draggingGroup)
   const transform = useAtomValue(canvasTransformAtom)
 
   const dragStateRef = useRef<{
@@ -110,6 +113,7 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
 
       state.didDrag = true
       setDraggingNode(state.nodeId)
+      setHoveredId(null)
       setPositions((prev) => ({
         ...prev,
         [state.nodeId]: {
@@ -177,11 +181,11 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
               opacity: isFaded ? 0.06 : 1,
               filter: isFaded ? 'grayscale(100%)' : 'none',
               zIndex: isSelected ? 30 : 10,
-              transform: isHovered && !isFaded ? 'translateY(-1px)' : 'none',
+              transform: isHovered && !isFaded && !anyDragActive ? 'translateY(-1px)' : 'none',
             }}
             onMouseDown={(e) => handleNodeMouseDown(node.id, e)}
-            onMouseEnter={() => { if (!isFaded) setHoveredId(node.id) }}
-            onMouseLeave={() => { if (hoveredId === node.id) setHoveredId(null) }}
+            onMouseEnter={() => { if (!isFaded && !anyDragActive) setHoveredId(node.id) }}
+            onMouseLeave={() => { if (hoveredId === node.id && !anyDragActive) setHoveredId(null) }}
           >
             {/* Left accent glow rail */}
             <div
