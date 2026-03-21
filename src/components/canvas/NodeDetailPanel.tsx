@@ -42,29 +42,29 @@ export function NodeDetailPanel() {
   return (
     <div
       className="absolute top-0 right-0 h-full z-50 transition-transform duration-300 ease-out pointer-events-none"
-      style={{ width: 'min(360px, calc(100% - 48px))', transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
+      style={{ width: 'min(300px, calc(100% - 24px))', transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
     >
       {node && detail && (
         <div
-          className="absolute top-3 right-3 bottom-3 left-0 rounded-xl backdrop-blur-xl overflow-y-auto pointer-events-auto"
+          className="absolute top-2 right-2 bottom-2 left-0 rounded-xl backdrop-blur-xl overflow-hidden pointer-events-auto flex flex-col"
           style={{
             background: 'var(--surface-glass)',
             boxShadow: 'inset 0 0 0 1px rgba(70, 72, 76, 0.15), -4px 0 24px rgba(0, 0, 0, 0.3)',
           }}
         >
           {/* Header */}
-          <div className="p-5 pb-4" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className={`p-2 rounded-lg shrink-0 ${getIconTintClass(node.color)}`}>
-                  <node.icon size={22} />
+          <div className="px-4 py-3 shrink-0" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className={`p-1.5 rounded-lg shrink-0 ${getIconTintClass(node.color)}`}>
+                  <node.icon size={18} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-lg font-display font-bold tracking-tight leading-tight truncate" style={{ color: 'var(--text-primary)' }}>
+                  <h3 className="text-[15px] font-display font-bold tracking-tight leading-tight truncate" style={{ color: 'var(--text-primary)' }}>
                     {detail.title}
                   </h3>
                   {detail.file && (
-                    <p className="text-[11px] font-mono mt-0.5 truncate" style={{ color: accentVarByColor[node.color] }}>
+                    <p className="text-[10px] font-mono mt-0.5 truncate" style={{ color: accentVarByColor[node.color] }}>
                       {detail.file}
                     </p>
                   )}
@@ -72,101 +72,104 @@ export function NodeDetailPanel() {
               </div>
               <button
                 onClick={() => setSelected(null)}
-                className="p-1.5 rounded-lg shrink-0 hover:bg-[var(--surface-card-hover)] transition-colors"
+                className="p-1 rounded-lg shrink-0 hover:bg-[var(--surface-card-hover)] transition-colors"
                 style={{ color: 'var(--text-muted)' }}
               >
-                <X size={16} />
+                <X size={14} />
               </button>
             </div>
           </div>
 
-          {/* Stats grid */}
-          {detail.stats.length > 0 && (
-            <div className="px-5 py-4" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-              <div className="space-y-2.5">
-                {detail.stats.map((stat) => (
-                  <div key={stat.label} className="flex justify-between items-baseline gap-3">
-                    <span className="text-[11px] font-display uppercase tracking-wider shrink-0" style={{ color: 'var(--text-muted)' }}>
-                      {stat.label}
-                    </span>
-                    <span className="text-sm font-display font-semibold text-right" style={{ color: 'var(--text-primary)' }}>
-                      {stat.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Item lists */}
-          {detail.items?.map((section) => (
-            <div key={section.heading} className="px-5 py-4" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-              <p className="text-[10px] font-display font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text-muted)' }}>
-                {section.heading}
-              </p>
-              <div className="space-y-1.5">
-                {section.entries.map((entry, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <span
-                      className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
-                      style={{ backgroundColor: accentVarByColor[node.color], boxShadow: `0 0 4px ${accentVarByColor[node.color]}` }}
-                    />
-                    <span className="text-[13px] font-sans leading-snug" style={{ color: 'var(--text-secondary)' }}>
-                      {entry}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          {/* Notes */}
-          {detail.notes && (
-            <div className="px-5 py-4" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-              <p className="text-[10px] font-display font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)' }}>
-                Notes
-              </p>
-              <p className="text-[13px] font-sans leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                {detail.notes}
-              </p>
-            </div>
-          )}
-
-          {/* Connected edges */}
-          {connectedEdges.length > 0 && (
-            <div className="px-5 py-4">
-              <p className="text-[10px] font-display font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text-muted)' }}>
-                Connections ({connectedEdges.length})
-              </p>
-              <div className="space-y-2">
-                {connectedEdges.map((edge) => {
-                  const isOutgoing = edge.from === selectedId
-                  const otherId = isOutgoing ? edge.to : edge.from
-                  const otherNode = archNodes.find((n) => n.id === otherId)
-                  if (!otherNode) return null
-                  return (
-                    <button
-                      key={edge.id}
-                      onClick={() => setSelected(otherId)}
-                      className="flex items-center gap-2 w-full text-left px-2.5 py-2 rounded-lg hover:bg-[var(--surface-card-hover)] transition-colors"
-                    >
-                      <span className="text-[11px] font-mono shrink-0" style={{ color: 'var(--text-muted)' }}>
-                        {isOutgoing ? '→' : '←'}
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+            {/* Stats grid */}
+            {detail.stats.length > 0 && (
+              <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                <div className="space-y-1.5">
+                  {detail.stats.map((stat) => (
+                    <div key={stat.label} className="flex justify-between items-baseline gap-2">
+                      <span className="text-[10px] font-display uppercase tracking-wider shrink-0" style={{ color: 'var(--text-muted)' }}>
+                        {stat.label}
                       </span>
-                      <span className="text-[13px] font-display font-semibold truncate" style={{ color: 'var(--text-primary)' }}>
-                        {otherNode.label}
+                      <span className="text-xs font-display font-semibold text-right" style={{ color: 'var(--text-primary)' }}>
+                        {stat.value}
                       </span>
-                      {edge.label && (
-                        <span className="text-[11px] font-sans ml-auto shrink-0" style={{ color: 'var(--text-muted)' }}>
-                          {edge.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Item lists */}
+            {detail.items?.map((section) => (
+              <div key={section.heading} className="px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                <p className="text-[9px] font-display font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)' }}>
+                  {section.heading}
+                </p>
+                <div className="space-y-1">
+                  {section.entries.map((entry, i) => (
+                    <div key={i} className="flex items-start gap-1.5">
+                      <span
+                        className="w-1 h-1 rounded-full mt-1.5 shrink-0"
+                        style={{ backgroundColor: accentVarByColor[node.color], boxShadow: `0 0 4px ${accentVarByColor[node.color]}` }}
+                      />
+                      <span className="text-[12px] font-sans leading-snug" style={{ color: 'var(--text-secondary)' }}>
+                        {entry}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Notes */}
+            {detail.notes && (
+              <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                <p className="text-[9px] font-display font-bold uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
+                  Notes
+                </p>
+                <p className="text-[12px] font-sans leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                  {detail.notes}
+                </p>
+              </div>
+            )}
+
+            {/* Connected edges */}
+            {connectedEdges.length > 0 && (
+              <div className="px-4 py-3">
+                <p className="text-[9px] font-display font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)' }}>
+                  Connections ({connectedEdges.length})
+                </p>
+                <div className="space-y-1">
+                  {connectedEdges.map((edge) => {
+                    const isOutgoing = edge.from === selectedId
+                    const otherId = isOutgoing ? edge.to : edge.from
+                    const otherNode = archNodes.find((n) => n.id === otherId)
+                    if (!otherNode) return null
+                    return (
+                      <button
+                        key={edge.id}
+                        onClick={() => setSelected(otherId)}
+                        className="flex items-center gap-1.5 w-full text-left px-2 py-1.5 rounded-lg hover:bg-[var(--surface-card-hover)] transition-colors"
+                      >
+                        <span className="text-[10px] font-mono shrink-0" style={{ color: 'var(--text-muted)' }}>
+                          {isOutgoing ? '→' : '←'}
                         </span>
-                      )}
-                    </button>
-                  )
-                })}
+                        <span className="text-[12px] font-display font-semibold truncate" style={{ color: 'var(--text-primary)' }}>
+                          {otherNode.label}
+                        </span>
+                        {edge.label && (
+                          <span className="text-[10px] font-sans ml-auto shrink-0" style={{ color: 'var(--text-muted)' }}>
+                            {edge.label}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>
