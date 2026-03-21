@@ -103,8 +103,8 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
               opacity: isFaded ? 0.05 : 1,
               boxShadow: ghostBorderByColor[group.color],
               transition: 'opacity 0.3s ease',
+              pointerEvents: 'none',
             }}
-            onMouseDown={undefined}
           >
             <div
               className={`absolute -top-5 left-6 z-[15] px-5 py-2 rounded-full font-bold tracking-[0.18em] font-mono pointer-events-auto cursor-grab active:cursor-grabbing select-none flex items-center gap-2 transition-opacity hover:opacity-100 ${textClass}`}
