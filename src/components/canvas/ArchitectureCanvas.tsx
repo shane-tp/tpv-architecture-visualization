@@ -119,6 +119,7 @@ export function ArchitectureCanvas() {
           transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
           transformOrigin: '0 0',
           transition: isAnimatingRef.current ? 'transform 75ms ease-out' : 'none',
+          pointerEvents: (draggingNode || draggingGroup) ? 'none' : undefined,
         }}
       >
         <ArchitectureGroups focusGroup={focusGroup} />

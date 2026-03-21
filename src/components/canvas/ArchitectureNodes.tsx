@@ -3,7 +3,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { archNodes } from '../../data/architecture'
 import { nodeDetails } from '../../data/nodeDetails'
 import { selectedNodeAtom, hoveredNodeAtom } from '../../atoms/selection'
-import { nodePositionsAtom, draggingNodeAtom, draggingGroupAtom } from '../../atoms/nodePositions'
+import { nodePositionsAtom, draggingNodeAtom } from '../../atoms/nodePositions'
 import { canvasTransformAtom } from '../../atoms/canvas'
 import { getIndicatorColor, getIconTintClass } from '../../lib/architecture/colors'
 import type { AccentColor, NodeStatus } from '../../types/architecture'
@@ -73,9 +73,6 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
   const positions = useAtomValue(nodePositionsAtom)
   const setPositions = useSetAtom(nodePositionsAtom)
   const setDraggingNode = useSetAtom(draggingNodeAtom)
-  const draggingNode = useAtomValue(draggingNodeAtom)
-  const draggingGroup = useAtomValue(draggingGroupAtom)
-  const anyDragActive = !!(draggingNode || draggingGroup)
   const transform = useAtomValue(canvasTransformAtom)
 
   const dragStateRef = useRef<{
@@ -113,7 +110,6 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
 
       state.didDrag = true
       setDraggingNode(state.nodeId)
-      setHoveredId(null)
       setPositions((prev) => ({
         ...prev,
         [state.nodeId]: {
@@ -156,7 +152,7 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
         const badge = node.status ? statusBadgeStyle[node.status] : null
         const barColor = barColorByAccent[node.color]
         const metricPercent = node.metric ? Math.min(node.metric.value, 100) : 0
-        const compact = node.h <= 145
+        const compact = node.h <= 165
 
         const computedShadow = isFaded
           ? 'none'
@@ -181,11 +177,11 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
               opacity: isFaded ? 0.06 : 1,
               filter: isFaded ? 'grayscale(100%)' : 'none',
               zIndex: isSelected ? 30 : 10,
-              transform: isHovered && !isFaded && !anyDragActive ? 'translateY(-1px)' : 'none',
+              transform: isHovered && !isFaded ? 'translateY(-1px)' : 'none',
             }}
             onMouseDown={(e) => handleNodeMouseDown(node.id, e)}
-            onMouseEnter={() => { if (!isFaded && !anyDragActive) setHoveredId(node.id) }}
-            onMouseLeave={() => { if (hoveredId === node.id && !anyDragActive) setHoveredId(null) }}
+            onMouseEnter={() => { if (!isFaded) setHoveredId(node.id) }}
+            onMouseLeave={() => { if (hoveredId === node.id) setHoveredId(null) }}
           >
             {/* Left accent glow rail */}
             <div
@@ -196,8 +192,8 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
             <div className={`${compact ? 'p-3' : 'p-5'} flex flex-col h-full`}>
               {/* Top row: icon + status badge */}
               <div className={`flex justify-between items-start ${compact ? 'mb-1' : 'mb-2'}`}>
-                <div className={`${compact ? 'p-1.5' : 'p-2'} rounded-lg shrink-0 ${iconClass}`}>
-                  <Icon size={compact ? 16 : 22} />
+                <div className={`${compact ? 'p-1.5' : 'p-2.5'} rounded-lg shrink-0 ${iconClass}`}>
+                  <Icon size={compact ? 18 : 24} />
                 </div>
                 {badge && (
                   <span
@@ -211,13 +207,13 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
 
               {/* Title + description */}
               <h4
-                className={`${compact ? 'text-base' : 'text-lg'} font-display font-bold tracking-tight leading-tight`}
+                className={`${compact ? 'text-lg' : 'text-xl'} font-display font-bold tracking-tight leading-tight`}
                 style={{ color: 'var(--text-primary)' }}
               >
                 {node.label}
               </h4>
               <p
-                className={`${compact ? 'text-sm' : 'text-base'} font-sans leading-snug mt-0.5 truncate`}
+                className={`${compact ? 'text-sm' : 'text-[15px]'} font-sans leading-snug mt-1 truncate`}
                 style={{ color: 'var(--text-muted)' }}
               >
                 {node.desc}
