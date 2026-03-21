@@ -22,7 +22,8 @@ const ghostBorderByColor: Record<AccentColor, string> = {
   amber:   'inset 0 0 0 1px rgba(245, 158, 11, 0.15), 0 0 30px rgba(245, 158, 11, 0.03)',
 }
 
-const DRAG_THRESHOLD = 4
+const LABEL_DRAG_THRESHOLD = 4
+const BODY_DRAG_THRESHOLD = 20
 
 export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
   const groupPositions = useAtomValue(groupPositionsAtom)
@@ -37,7 +38,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
     didDrag: boolean
   } | null>(null)
 
-  const handleLabelMouseDown = useCallback((groupId: string, e: React.MouseEvent) => {
+  const startGroupDrag = useCallback((groupId: string, e: React.MouseEvent, threshold: number) => {
     e.stopPropagation()
     e.preventDefault()
 
@@ -57,7 +58,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
       const rawDx = me.clientX - state.startMouseX
       const rawDy = me.clientY - state.startMouseY
 
-      if (!state.didDrag && Math.sqrt(rawDx * rawDx + rawDy * rawDy) < DRAG_THRESHOLD) return
+      if (!state.didDrag && Math.sqrt(rawDx * rawDx + rawDy * rawDy) < threshold) return
 
       state.didDrag = true
       setDraggingGroup(state.groupId)
@@ -94,7 +95,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
         return (
           <div
             key={group.id}
-            className={`absolute rounded-2xl z-[5] transition-opacity duration-300 pointer-events-none ${bgClass}`}
+            className={`absolute rounded-2xl transition-opacity duration-300 ${bgClass}`}
             style={{
               left: pos.x,
               top: pos.y,
@@ -103,18 +104,24 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
               opacity: isFaded ? 0.05 : 1,
               boxShadow: ghostBorderByColor[group.color],
             }}
+            onMouseDown={(e) => startGroupDrag(group.id, e, BODY_DRAG_THRESHOLD)}
           >
             <div
-              className={`absolute -top-5 left-6 z-[15] px-4 py-1.5 rounded-full text-sm font-bold tracking-[0.2em] font-mono pointer-events-auto cursor-grab active:cursor-grabbing select-none flex items-center gap-1.5 ${textClass}`}
+              className={`absolute -top-5 left-6 z-[15] px-5 py-2 rounded-full font-bold tracking-[0.18em] font-mono pointer-events-auto cursor-grab active:cursor-grabbing select-none flex items-center gap-2 transition-opacity hover:opacity-100 ${textClass}`}
               style={{
                 backgroundColor: 'var(--group-label-bg)',
                 boxShadow: ghostBorderByColor[group.color],
-                fontSize: '14px',
-                letterSpacing: '0.2em',
+                fontSize: '15px',
+                letterSpacing: '0.18em',
+                opacity: 0.85,
               }}
-              onMouseDown={(e) => handleLabelMouseDown(group.id, e)}
+              title="Drag to move group"
+              onMouseDown={(e) => {
+                e.stopPropagation()
+                startGroupDrag(group.id, e, LABEL_DRAG_THRESHOLD)
+              }}
             >
-              <GripVertical size={14} className="opacity-40" />
+              <GripVertical size={16} className="opacity-60" />
               {group.label}
             </div>
           </div>
