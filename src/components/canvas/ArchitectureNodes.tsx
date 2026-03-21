@@ -2,7 +2,7 @@ import { useRef, useCallback } from 'react'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { archNodes } from '../../data/architecture'
 import { nodeDetails } from '../../data/nodeDetails'
-import { selectedNodeAtom } from '../../atoms/selection'
+import { selectedNodeAtom, hoveredNodeAtom } from '../../atoms/selection'
 import { nodePositionsAtom, draggingNodeAtom } from '../../atoms/nodePositions'
 import { canvasTransformAtom } from '../../atoms/canvas'
 import { getIndicatorColor, getIconTintClass } from '../../lib/architecture/colors'
@@ -69,6 +69,7 @@ const DRAG_THRESHOLD = 4
 
 export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
   const [selectedNodeId, setSelectedNodeId] = useAtom(selectedNodeAtom)
+  const [hoveredId, setHoveredId] = useAtom(hoveredNodeAtom)
   const positions = useAtomValue(nodePositionsAtom)
   const setPositions = useSetAtom(nodePositionsAtom)
   const setDraggingNode = useSetAtom(draggingNodeAtom)
@@ -143,6 +144,7 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
         const pos = positions[node.id] ?? { x: node.x, y: node.y }
         const isFaded = focusGroup !== null && focusGroup !== node.group
         const isSelected = selectedNodeId === node.id
+        const isHovered = hoveredId === node.id
         const hasDetail = node.id in nodeDetails
         const Icon = node.icon
         const indicatorClass = getIndicatorColor(node.color)
@@ -152,14 +154,18 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
         const metricPercent = node.metric ? Math.min(node.metric.value, 100) : 0
         const compact = node.h <= 145
 
-        const defaultShadow = isSelected
-          ? selectedRingByColor[node.color]
-          : 'var(--node-shadow), var(--node-inset)'
+        const computedShadow = isFaded
+          ? 'none'
+          : isSelected
+            ? selectedRingByColor[node.color]
+            : isHovered
+              ? glowByColor[node.color]
+              : 'var(--node-shadow), var(--node-inset)'
 
         return (
           <div
             key={node.id}
-            className={`absolute z-10 rounded-xl backdrop-blur-lg overflow-hidden transition-shadow duration-200 hover:-translate-y-0.5 ${hasDetail ? 'cursor-pointer' : 'cursor-grab'}`}
+            className={`absolute z-10 rounded-xl backdrop-blur-lg overflow-hidden transition-all duration-200 ${hasDetail ? 'cursor-pointer' : 'cursor-grab'}`}
             style={{
               left: pos.x,
               top: pos.y,
@@ -167,18 +173,15 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
               height: node.h,
               background: 'var(--surface-glass)',
               border: `1px solid ${borderByColor[node.color]}`,
-              boxShadow: isFaded ? 'none' : defaultShadow,
+              boxShadow: computedShadow,
               opacity: isFaded ? 0.06 : 1,
               filter: isFaded ? 'grayscale(100%)' : 'none',
               zIndex: isSelected ? 30 : 10,
+              transform: isHovered && !isFaded ? 'translateY(-1px)' : 'none',
             }}
             onMouseDown={(e) => handleNodeMouseDown(node.id, e)}
-            onMouseEnter={(e) => {
-              if (!isFaded && !isSelected) e.currentTarget.style.boxShadow = glowByColor[node.color]
-            }}
-            onMouseLeave={(e) => {
-              if (!isFaded) e.currentTarget.style.boxShadow = defaultShadow
-            }}
+            onMouseEnter={() => { if (!isFaded) setHoveredId(node.id) }}
+            onMouseLeave={() => { if (hoveredId === node.id) setHoveredId(null) }}
           >
             {/* Left accent glow rail */}
             <div
