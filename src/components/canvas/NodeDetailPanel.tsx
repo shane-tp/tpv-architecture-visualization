@@ -41,7 +41,7 @@ export function NodeDetailPanel() {
 
   return (
     <div
-      className="absolute top-0 right-0 bottom-0 z-[60] transition-transform duration-300 ease-out pointer-events-none"
+      className="fixed top-0 right-0 bottom-0 z-[9999] transition-transform duration-300 ease-out pointer-events-none"
       style={{ width: 300, transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
     >
       {node && detail && (
