@@ -94,7 +94,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
         return (
           <div
             key={group.id}
-            className={`absolute rounded-2xl z-0 transition-opacity duration-300 pointer-events-none ${bgClass}`}
+            className={`absolute rounded-2xl z-[5] transition-opacity duration-300 pointer-events-none ${bgClass}`}
             style={{
               left: pos.x,
               top: pos.y,
@@ -105,7 +105,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
             }}
           >
             <div
-              className={`absolute -top-5 left-6 px-4 py-1.5 rounded-full text-sm font-bold tracking-[0.2em] font-mono pointer-events-auto cursor-grab active:cursor-grabbing select-none flex items-center gap-1.5 ${textClass}`}
+              className={`absolute -top-5 left-6 z-[15] px-4 py-1.5 rounded-full text-sm font-bold tracking-[0.2em] font-mono pointer-events-auto cursor-grab active:cursor-grabbing select-none flex items-center gap-1.5 ${textClass}`}
               style={{
                 backgroundColor: 'var(--group-label-bg)',
                 boxShadow: ghostBorderByColor[group.color],

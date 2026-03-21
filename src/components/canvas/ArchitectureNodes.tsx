@@ -165,7 +165,7 @@ export function ArchitectureNodes({ focusGroup }: ArchitectureNodesProps) {
         return (
           <div
             key={node.id}
-            className={`absolute z-10 rounded-xl backdrop-blur-lg overflow-hidden transition-all duration-200 ${hasDetail ? 'cursor-pointer' : 'cursor-grab'}`}
+            className={`absolute z-10 rounded-xl backdrop-blur-lg overflow-hidden transition-[box-shadow] duration-200 ${hasDetail ? 'cursor-pointer' : 'cursor-grab'}`}
             style={{
               left: pos.x,
               top: pos.y,
