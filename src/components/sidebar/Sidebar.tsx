@@ -18,7 +18,7 @@ export function Sidebar() {
       }}
     >
       {/* Header */}
-      <div className={`${collapsed ? 'p-2 pb-2' : 'p-6 pb-5'}`}>
+      <div className={`${collapsed ? 'p-2 pb-2' : 'p-6 pb-3'}`}>
         <div className="flex items-center justify-between">
           <div className={`flex items-center ${collapsed ? 'justify-center w-full' : 'gap-3'}`}>
             <div className="p-2.5 bg-gradient-to-br from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-600 rounded-xl shadow-lg shadow-cyan-500/20 shrink-0">
@@ -37,6 +37,15 @@ export function Sidebar() {
           </div>
           {!collapsed && <ThemeToggle />}
         </div>
+
+        {/* Collapse / Expand toggle */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className={`flex items-center ${collapsed ? 'justify-center' : 'gap-2'} w-full mt-3 py-2 rounded-lg text-xs font-medium font-display transition-all text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-card-hover)]`}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {collapsed ? <PanelLeftOpen size={16} /> : <><PanelLeftClose size={14} /><span>Collapse</span></>}
+        </button>
       </div>
 
       {/* Navigation */}
@@ -110,16 +119,7 @@ export function Sidebar() {
         )}
       </div>
 
-      {/* Collapse toggle */}
-      <div className={`${collapsed ? 'p-1.5' : 'p-4'} mt-auto`}>
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-center w-full py-2.5 rounded-xl text-sm font-medium font-display transition-all text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-card-hover)]"
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-        </button>
-      </div>
+    
     </aside>
   )
 }
