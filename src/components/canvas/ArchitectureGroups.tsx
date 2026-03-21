@@ -23,7 +23,6 @@ const ghostBorderByColor: Record<AccentColor, string> = {
 }
 
 const LABEL_DRAG_THRESHOLD = 4
-const BODY_DRAG_THRESHOLD = 20
 
 export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
   const groupPositions = useAtomValue(groupPositionsAtom)
@@ -105,7 +104,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
               boxShadow: ghostBorderByColor[group.color],
               transition: 'opacity 0.3s ease',
             }}
-            onMouseDown={(e) => startGroupDrag(group.id, e, BODY_DRAG_THRESHOLD)}
+            onMouseDown={undefined}
           >
             <div
               className={`absolute -top-5 left-6 z-[15] px-5 py-2 rounded-full font-bold tracking-[0.18em] font-mono pointer-events-auto cursor-grab active:cursor-grabbing select-none flex items-center gap-2 transition-opacity hover:opacity-100 ${textClass}`}
