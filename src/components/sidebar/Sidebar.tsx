@@ -1,56 +1,62 @@
 import { useAtom } from 'jotai'
-import { LayoutTemplate, ShieldAlert, Layers } from 'lucide-react'
+import { LayoutTemplate, ShieldAlert, Layers, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { archGroups } from '../../data/architecture'
 import { ThemeToggle } from '../theme/ThemeToggle'
-import { activeTabAtom, focusGroupAtom } from '../../atoms/navigation'
+import { activeTabAtom, focusGroupAtom, sidebarCollapsedAtom } from '../../atoms/navigation'
 
 export function Sidebar() {
   const [activeTab, setActiveTab] = useAtom(activeTabAtom)
   const [focusGroup, setFocusGroup] = useAtom(focusGroupAtom)
+  const [collapsed, setCollapsed] = useAtom(sidebarCollapsedAtom)
+
   return (
     <aside
-      className="w-72 shrink-0 flex flex-col z-20 transition-theme backdrop-blur-xl"
+      className={`${collapsed ? 'w-14' : 'w-72'} shrink-0 flex flex-col z-20 transition-all duration-300 backdrop-blur-xl`}
       style={{
         backgroundColor: 'var(--bg-elevated)',
         boxShadow: '20px 0 50px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 240, 255, 0.06)',
       }}
     >
       {/* Header */}
-      <div className="p-6 pb-5">
+      <div className={`${collapsed ? 'p-2 pb-2' : 'p-6 pb-5'}`}>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-600 rounded-xl shadow-lg shadow-cyan-500/20">
+          <div className={`flex items-center ${collapsed ? 'justify-center w-full' : 'gap-3'}`}>
+            <div className="p-2.5 bg-gradient-to-br from-cyan-500 to-cyan-600 dark:from-cyan-400 dark:to-cyan-600 rounded-xl shadow-lg shadow-cyan-500/20 shrink-0">
               <Layers className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <h1 className="text-lg font-bold font-display bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-cyan-500 dark:from-cyan-400 dark:to-cyan-300 tracking-tight drop-shadow-[0_0_8px_rgba(0,240,255,0.3)]">
-                TPV Explorer
-              </h1>
-              <p className="text-[10px] font-display mt-0.5 uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-                Architecture Explorer
-              </p>
-            </div>
+            {!collapsed && (
+              <div>
+                <h1 className="text-lg font-bold font-display bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-cyan-500 dark:from-cyan-400 dark:to-cyan-300 tracking-tight drop-shadow-[0_0_8px_rgba(0,240,255,0.3)]">
+                  TPV Explorer
+                </h1>
+                <p className="text-[10px] font-display mt-0.5 uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+                  Architecture Explorer
+                </p>
+              </div>
+            )}
           </div>
-          <ThemeToggle />
+          {!collapsed && <ThemeToggle />}
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="px-4 space-y-1 flex-1 overflow-y-auto mt-4">
+      <div className={`${collapsed ? 'px-1.5' : 'px-4'} space-y-1 flex-1 overflow-y-auto mt-4`}>
         <NavButton
           active={activeTab === 'canvas'}
           onClick={() => { setActiveTab('canvas'); setFocusGroup(null) }}
           icon={<LayoutTemplate size={18} />}
           label="Interactive Canvas"
+          collapsed={collapsed}
         />
         <NavButton
           active={activeTab === 'debt'}
           onClick={() => setActiveTab('debt')}
           icon={<ShieldAlert size={18} />}
           label="Tech Debt Map"
+          collapsed={collapsed}
         />
 
-        {activeTab === 'canvas' && (
+        {activeTab === 'canvas' && !collapsed && (
           <>
             <div className="mt-8">
               <div
@@ -104,6 +110,16 @@ export function Sidebar() {
         )}
       </div>
 
+      {/* Collapse toggle */}
+      <div className={`${collapsed ? 'p-1.5' : 'p-4'} mt-auto`}>
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="flex items-center justify-center w-full py-2.5 rounded-xl text-sm font-medium font-display transition-all text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-card-hover)]"
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+        </button>
+      </div>
     </aside>
   )
 }
@@ -113,22 +129,25 @@ function NavButton({
   onClick,
   icon,
   label,
+  collapsed,
 }: {
   active: boolean
   onClick: () => void
   icon: React.ReactNode
   label: string
+  collapsed: boolean
 }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium font-display tracking-tight transition-all ${
+      className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} w-full ${collapsed ? 'px-0 py-3' : 'px-4 py-3'} rounded-xl text-sm font-medium font-display tracking-tight transition-all ${
         active
           ? 'text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 dark:bg-cyan-400/10 border-r-2 border-cyan-500 dark:border-cyan-400'
           : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-r-2 border-transparent hover:bg-[var(--surface-card-hover)]'
       }`}
+      title={collapsed ? label : undefined}
     >
-      {icon} {label}
+      {icon} {!collapsed && label}
     </button>
   )
 }
@@ -152,4 +171,3 @@ function LegendDot({ color, label }: { color: string; label: string }) {
     </div>
   )
 }
-

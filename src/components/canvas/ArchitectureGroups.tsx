@@ -1,8 +1,9 @@
 import { useRef, useCallback } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { archGroups, archNodes } from '../../data/architecture'
+import { GripVertical } from 'lucide-react'
+import { archGroups } from '../../data/architecture'
 import { getGroupBgClass, getGroupTextClass } from '../../lib/architecture/colors'
-import { groupPositionsAtom, nodePositionsAtom, draggingGroupAtom } from '../../atoms/nodePositions'
+import { groupPositionsAtom, draggingGroupAtom, moveGroupAtom } from '../../atoms/nodePositions'
 import { canvasTransformAtom } from '../../atoms/canvas'
 import type { AccentColor } from '../../types/architecture'
 
@@ -23,17 +24,10 @@ const ghostBorderByColor: Record<AccentColor, string> = {
 
 const DRAG_THRESHOLD = 4
 
-const childNodesByGroup: Record<string, string[]> = {}
-for (const n of archNodes) {
-  if (!childNodesByGroup[n.group]) childNodesByGroup[n.group] = []
-  childNodesByGroup[n.group].push(n.id)
-}
-
 export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
   const groupPositions = useAtomValue(groupPositionsAtom)
-  const setGroupPositions = useSetAtom(groupPositionsAtom)
-  const setNodePositions = useSetAtom(nodePositionsAtom)
   const setDraggingGroup = useSetAtom(draggingGroupAtom)
+  const moveGroup = useSetAtom(moveGroupAtom)
   const transform = useAtomValue(canvasTransformAtom)
 
   const dragStateRef = useRef<{
@@ -43,7 +37,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
     didDrag: boolean
   } | null>(null)
 
-  const handleGroupMouseDown = useCallback((groupId: string, e: React.MouseEvent) => {
+  const handleLabelMouseDown = useCallback((groupId: string, e: React.MouseEvent) => {
     e.stopPropagation()
     e.preventDefault()
 
@@ -75,25 +69,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
       lastDx = dx
       lastDy = dy
 
-      setGroupPositions((prev) => ({
-        ...prev,
-        [state.groupId]: {
-          x: prev[state.groupId].x + deltaDx,
-          y: prev[state.groupId].y + deltaDy,
-        },
-      }))
-
-      const children = childNodesByGroup[state.groupId] ?? []
-      if (children.length > 0) {
-        setNodePositions((prev) => {
-          const next = { ...prev }
-          for (const id of children) {
-            const p = next[id]
-            if (p) next[id] = { x: p.x + deltaDx, y: p.y + deltaDy }
-          }
-          return next
-        })
-      }
+      moveGroup({ groupId: state.groupId, dx: deltaDx, dy: deltaDy })
     }
 
     const handleMouseUp = () => {
@@ -105,7 +81,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
 
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
-  }, [transform.scale, setGroupPositions, setNodePositions, setDraggingGroup])
+  }, [transform.scale, moveGroup, setDraggingGroup])
 
   return (
     <>
@@ -118,7 +94,7 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
         return (
           <div
             key={group.id}
-            className={`absolute rounded-2xl z-0 transition-opacity duration-300 cursor-grab active:cursor-grabbing ${bgClass}`}
+            className={`absolute rounded-2xl z-0 transition-opacity duration-300 pointer-events-none ${bgClass}`}
             style={{
               left: pos.x,
               top: pos.y,
@@ -127,17 +103,18 @@ export function ArchitectureGroups({ focusGroup }: ArchitectureGroupsProps) {
               opacity: isFaded ? 0.05 : 1,
               boxShadow: ghostBorderByColor[group.color],
             }}
-            onMouseDown={(e) => handleGroupMouseDown(group.id, e)}
           >
             <div
-              className={`absolute -top-5 left-6 px-4 py-1.5 rounded-full text-sm font-bold tracking-[0.2em] font-mono ${textClass}`}
+              className={`absolute -top-5 left-6 px-4 py-1.5 rounded-full text-sm font-bold tracking-[0.2em] font-mono pointer-events-auto cursor-grab active:cursor-grabbing select-none flex items-center gap-1.5 ${textClass}`}
               style={{
                 backgroundColor: 'var(--group-label-bg)',
                 boxShadow: ghostBorderByColor[group.color],
                 fontSize: '14px',
                 letterSpacing: '0.2em',
               }}
+              onMouseDown={(e) => handleLabelMouseDown(group.id, e)}
             >
+              <GripVertical size={14} className="opacity-40" />
               {group.label}
             </div>
           </div>

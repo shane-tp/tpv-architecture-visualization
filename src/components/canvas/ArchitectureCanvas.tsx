@@ -18,6 +18,7 @@ export function ArchitectureCanvas() {
   const dragStartRef = useRef({ x: 0, y: 0 })
   const mouseDownPosRef = useRef({ x: 0, y: 0 })
   const didDragRef = useRef(false)
+  const isAnimatingRef = useRef(false)
 
   const [transform, setTransform] = useAtom(canvasTransformAtom)
   const [isDragging, setIsDragging] = useAtom(isDraggingAtom)
@@ -77,15 +78,25 @@ export function ArchitectureCanvas() {
     setIsDragging(false)
   }, [setIsDragging])
 
-  const zoomIn = useCallback(() => {
-    setTransform((prev) => ({ ...prev, scale: Math.min(prev.scale + 0.1, 3) }))
+  const animatedZoom = useCallback((updater: (prev: typeof transform) => typeof transform) => {
+    isAnimatingRef.current = true
+    setTransform(updater)
+    setTimeout(() => { isAnimatingRef.current = false }, 80)
   }, [setTransform])
+
+  const zoomIn = useCallback(() => {
+    animatedZoom((prev) => ({ ...prev, scale: Math.min(prev.scale + 0.1, 3) }))
+  }, [animatedZoom])
 
   const zoomOut = useCallback(() => {
-    setTransform((prev) => ({ ...prev, scale: Math.max(prev.scale - 0.1, 0.08) }))
-  }, [setTransform])
+    animatedZoom((prev) => ({ ...prev, scale: Math.max(prev.scale - 0.1, 0.08) }))
+  }, [animatedZoom])
 
-  const resetZoom = useCallback(() => setTransform(INITIAL_TRANSFORM), [setTransform])
+  const resetZoom = useCallback(() => {
+    isAnimatingRef.current = true
+    setTransform(INITIAL_TRANSFORM)
+    setTimeout(() => { isAnimatingRef.current = false }, 80)
+  }, [setTransform])
   const handleResetLayout = useCallback(() => resetLayout(), [resetLayout])
 
   return (
@@ -107,7 +118,7 @@ export function ArchitectureCanvas() {
         style={{
           transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
           transformOrigin: '0 0',
-          transition: isDragging || draggingNode || draggingGroup ? 'none' : 'transform 75ms ease-out',
+          transition: isAnimatingRef.current ? 'transform 75ms ease-out' : 'none',
         }}
       >
         <ArchitectureGroups focusGroup={focusGroup} />

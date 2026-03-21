@@ -42,11 +42,11 @@ export function NodeDetailPanel() {
   return (
     <div
       className="absolute top-0 right-0 h-full z-50 transition-transform duration-300 ease-out pointer-events-none"
-      style={{ width: 360, transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
+      style={{ width: 'min(360px, calc(100% - 48px))', transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
     >
       {node && detail && (
         <div
-          className="h-full m-3 ml-0 rounded-xl backdrop-blur-xl overflow-y-auto pointer-events-auto"
+          className="absolute top-3 right-3 bottom-3 left-0 rounded-xl backdrop-blur-xl overflow-y-auto pointer-events-auto"
           style={{
             background: 'var(--surface-glass)',
             boxShadow: 'inset 0 0 0 1px rgba(70, 72, 76, 0.15), -4px 0 24px rgba(0, 0, 0, 0.3)',
