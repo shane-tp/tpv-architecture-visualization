@@ -41,15 +41,15 @@ export function NodeDetailPanel() {
 
   return (
     <div
-      className="absolute top-0 right-0 h-full z-50 transition-transform duration-300 ease-out pointer-events-none"
-      style={{ width: 'min(300px, calc(100% - 24px))', transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
+      className="absolute top-0 right-0 bottom-0 z-[60] transition-transform duration-300 ease-out pointer-events-none"
+      style={{ width: 300, transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
     >
       {node && detail && (
         <div
           className="absolute top-2 right-2 bottom-2 left-0 rounded-xl backdrop-blur-xl overflow-hidden pointer-events-auto flex flex-col"
           style={{
             background: 'var(--surface-glass)',
-            boxShadow: 'inset 0 0 0 1px rgba(70, 72, 76, 0.15), -4px 0 24px rgba(0, 0, 0, 0.3)',
+            boxShadow: 'inset 0 0 0 1px rgba(70, 72, 76, 0.15), -8px 0 32px rgba(0, 0, 0, 0.4)',
           }}
         >
           {/* Header */}

@@ -36,14 +36,12 @@ export default function App() {
             )}
             <div className="flex-1 relative overflow-hidden">
               {activeTab === 'canvas' ? (
-                <>
-                  <ArchitectureCanvas />
-                  <NodeDetailPanel />
-                </>
+                <ArchitectureCanvas />
               ) : (
                 <TechDebtPanel />
               )}
             </div>
+            {activeTab === 'canvas' && <NodeDetailPanel />}
           </main>
         </div>
       </PasswordGate>
